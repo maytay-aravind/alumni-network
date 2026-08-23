@@ -15,83 +15,57 @@ import { COLLEGE_NAME } from "@/lib/constants";
 const features = [
   {
     icon: Users,
-    title: "Alumni Network",
-    description:
-      "Connect with thousands of alumni from your college. Build meaningful professional relationships.",
+    title: "Alumni network",
+    description: "Connect with thousands of verified alumni. Build real professional relationships.",
   },
   {
     icon: Target,
     title: "Mentorship",
-    description:
-      "Get guidance from experienced professionals. Find mentors in your field of interest.",
+    description: "Find mentors in your field. Get guidance that actually fits your goals.",
   },
   {
     icon: Sparkles,
-    title: "AI Career Assistant",
-    description:
-      "Get personalized career advice powered by AI. Optimize your resume and career path.",
+    title: "AI career lab",
+    description: "Resume review, skill gaps, and mentor matching — grounded in your profile.",
   },
   {
     icon: Briefcase,
-    title: "Jobs & Internships",
-    description:
-      "Access exclusive job opportunities posted by alumni. Find internships and full-time positions.",
+    title: "Jobs & referrals",
+    description: "Roles posted by alumni. Apply, request referrals, and track progress.",
   },
 ];
 
 const stats = [
-  { value: "10,000+", label: "Alumni Members" },
-  { value: "500+", label: "Mentors Available" },
-  { value: "2,000+", label: "Jobs Posted" },
-  { value: "95%", label: "Satisfaction Rate" },
+  { value: "10k+", label: "Alumni" },
+  { value: "500+", label: "Mentors" },
+  { value: "2k+", label: "Jobs" },
+  { value: "4.9/5", label: "Rated" },
 ];
 
 export default function HomePage() {
   return (
-    <div className="flex flex-col min-h-screen">
-      {/* Navbar */}
-      <header className="sticky top-0 z-50 border-b bg-white/80 backdrop-blur-md dark:bg-gray-950/80">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          <Link href="/" className="flex items-center gap-2">
-            <GraduationCap className="h-8 w-8 text-indigo-600" />
-            <span className="text-xl font-bold text-gray-900 dark:text-white">
-              AlumniConnect
+    <div className="min-h-screen flex flex-col bg-[var(--md-sys-color-background)]">
+      <header className="sticky top-0 z-40 bg-[var(--md-sys-color-surface)] border-b border-[var(--md-sys-color-outline-variant)]">
+        <div className="mx-auto max-w-[1120px] h-[64px] flex items-center justify-between px-4 lg:px-6 gap-4">
+          <Link href="/" className="flex items-center gap-3">
+            <span className="h-9 w-9 rounded-[12px] bg-[var(--md-sys-color-primary)] grid place-items-center">
+              <GraduationCap className="h-5 w-5 text-[var(--md-sys-color-on-primary)]" />
             </span>
+            <span className="text-[16px] font-semibold tracking-tight text-[var(--md-sys-color-on-surface)]">AlumniNet</span>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-8">
-            <Link
-              href="#features"
-              className="text-sm font-medium text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors"
-            >
-              Features
-            </Link>
-            <Link
-              href="#stats"
-              className="text-sm font-medium text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors"
-            >
-              Community
-            </Link>
-            <Link
-              href="#cta"
-              className="text-sm font-medium text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors"
-            >
-              About
-            </Link>
+          <nav className="hidden md:flex items-center gap-1">
+            <a href="#features" className="h-10 px-4 grid place-items-center rounded-full text-sm font-medium text-[var(--md-sys-color-on-surface-variant)] hover:bg-[var(--md-sys-color-surface-container)]">Features</a>
+            <a href="#community" className="h-10 px-4 grid place-items-center rounded-full text-sm font-medium text-[var(--md-sys-color-on-surface-variant)] hover:bg-[var(--md-sys-color-surface-container)]">Community</a>
+            <a href="#about" className="h-10 px-4 grid place-items-center rounded-full text-sm font-medium text-[var(--md-sys-color-on-surface-variant)] hover:bg-[var(--md-sys-color-surface-container)]">About</a>
           </nav>
 
-          <div className="flex items-center gap-3">
-            <Link
-              href="/login"
-              className="hidden sm:inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700 transition-colors"
-            >
-              Login
+          <div className="flex items-center gap-2">
+            <Link href="/login" className="hidden sm:inline-flex h-10 px-5 items-center justify-center rounded-full border border-[var(--md-sys-color-outline)] text-sm font-medium text-[var(--md-sys-color-primary)] hover:bg-[var(--md-sys-color-surface-container)]">
+              Sign in
             </Link>
-            <Link
-              href="/register"
-              className="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-500 transition-colors"
-            >
-              Register
+            <Link href="/register" className="inline-flex h-10 px-5 items-center justify-center rounded-full bg-[var(--md-sys-color-primary)] text-[var(--md-sys-color-on-primary)] text-sm font-medium hover:bg-[#4539A0]">
+              Get started
               <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </div>
@@ -99,216 +73,134 @@ export default function HomePage() {
       </header>
 
       <main className="flex-1">
-        {/* Hero Section */}
-        <section className="relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950" />
-          <div className="absolute inset-0">
-            <div className="absolute top-0 left-1/4 h-72 w-72 rounded-full bg-indigo-200/30 blur-3xl dark:bg-indigo-900/20" />
-            <div className="absolute bottom-0 right-1/4 h-72 w-72 rounded-full bg-purple-200/30 blur-3xl dark:bg-purple-900/20" />
-          </div>
-
-          <div className="relative mx-auto max-w-7xl px-4 py-24 sm:px-6 sm:py-32 lg:px-8">
-            <div className="text-center">
-              <div className="mb-6 inline-flex items-center rounded-full border border-indigo-200 bg-indigo-50 px-4 py-1.5 text-sm font-medium text-indigo-700 dark:border-indigo-800 dark:bg-indigo-950 dark:text-indigo-300">
-                <Sparkles className="mr-2 h-4 w-4" />
-                Powered by AI Technology
-              </div>
-
-              <h1 className="mx-auto max-w-4xl text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl dark:text-white">
-                Your Gateway to a{" "}
-                <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                  Thriving Alumni
-                </span>{" "}
-                Community
-              </h1>
-
-              <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-gray-600 dark:text-gray-300">
-                Connect with distinguished alumni, find mentors in your field, discover exclusive
-                career opportunities, and build lasting professional relationships through{" "}
-                <span className="font-semibold text-indigo-600 dark:text-indigo-400">
-                  {COLLEGE_NAME}
+        <section className="mx-auto max-w-[1120px] px-4 lg:px-6 pt-6">
+          <div className="rounded-[28px] bg-[var(--md-sys-color-primary-container)] border border-[var(--md-sys-color-outline-variant)] overflow-hidden">
+            <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-6 p-6 lg:p-10">
+              <div className="py-2">
+                <span className="inline-flex items-center gap-2 h-7 rounded-full bg-[var(--md-sys-color-surface-container-low)] border border-[var(--md-sys-color-outline-variant)] px-3 text-xs font-medium text-[var(--md-sys-color-on-surface-variant)]">
+                  <Sparkles className="h-3.5 w-3.5 text-[var(--md-sys-color-primary)]" /> Built for students and alumni
                 </span>
-                .
-              </p>
-
-              <div className="mt-10 flex items-center justify-center gap-4">
-                <Link
-                  href="/register"
-                  className="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-8 py-3 text-base font-semibold text-white shadow-lg shadow-indigo-200 hover:bg-indigo-500 dark:shadow-indigo-900/50 transition-all hover:scale-105"
-                >
-                  Get Started Free
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
-                <Link
-                  href="/login"
-                  className="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-8 py-3 text-base font-semibold text-gray-700 shadow-sm hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700 transition-colors"
-                >
-                  Sign In
-                </Link>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Features Section */}
-        <section id="features" className="py-24 bg-white dark:bg-gray-950">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="text-center">
-              <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl dark:text-white">
-                Everything You Need to Succeed
-              </h2>
-              <p className="mx-auto mt-4 max-w-2xl text-lg text-gray-600 dark:text-gray-400">
-                Our platform provides all the tools you need to connect, learn, and grow
-                professionally.
-              </p>
-            </div>
-
-            <div className="mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-              {features.map((feature) => (
-                <div
-                  key={feature.title}
-                  className="group relative rounded-2xl border border-gray-200 bg-white p-8 shadow-sm transition-all hover:shadow-md hover:border-indigo-200 dark:border-gray-800 dark:bg-gray-900 dark:hover:border-indigo-800"
-                >
-                  <div className="mb-4 inline-flex rounded-xl bg-indigo-100 p-3 dark:bg-indigo-950">
-                    <feature.icon className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
-                  </div>
-                  <h3 className="mb-2 text-lg font-semibold text-gray-900 dark:text-white">
-                    {feature.title}
-                  </h3>
-                  <p className="text-sm leading-relaxed text-gray-600 dark:text-gray-400">
-                    {feature.description}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Stats Section */}
-        <section id="stats" className="py-24 bg-gray-50 dark:bg-gray-900">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
-              {stats.map((stat) => (
-                <div key={stat.label} className="text-center">
-                  <div className="text-4xl font-bold text-indigo-600 dark:text-indigo-400">
-                    {stat.value}
-                  </div>
-                  <div className="mt-2 text-sm font-medium text-gray-600 dark:text-gray-400">
-                    {stat.label}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* CTA Section */}
-        <section id="cta" className="py-24 bg-white dark:bg-gray-950">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-indigo-600 to-purple-600 px-8 py-16 text-center sm:px-16">
-              <div className="absolute inset-0">
-                <div className="absolute top-0 right-0 h-64 w-64 rounded-full bg-white/10 blur-3xl" />
-                <div className="absolute bottom-0 left-0 h-64 w-64 rounded-full bg-purple-500/20 blur-3xl" />
-              </div>
-
-              <div className="relative">
-                <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-                  Ready to Join Our Community?
-                </h2>
-                <p className="mx-auto mt-4 max-w-xl text-lg text-indigo-100">
-                  Start connecting with alumni, finding mentors, and advancing your career today.
-                  It&apos;s completely free for students.
+                <h1 className="mt-4 text-[32px] lg:text-[40px] leading-[1.05] tracking-tight font-normal text-[var(--md-sys-color-on-primary-container)]">
+                  A network that<br />
+                  <span className="font-medium">moves you forward.</span>
+                </h1>
+                <p className="mt-4 max-w-[52ch] text-[15px] leading-6 text-[var(--md-sys-color-on-primary-container)]/80">
+                  Connect with {COLLEGE_NAME} alumni, find mentors who fit your goals, and discover roles posted by people who were in your place.
                 </p>
-
-                <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-                  <Link
-                    href="/register"
-                    className="inline-flex items-center justify-center rounded-lg bg-white px-8 py-3 text-base font-semibold text-indigo-600 shadow-lg hover:bg-indigo-50 transition-colors"
-                  >
-                    Create Free Account
-                    <ArrowRight className="ml-2 h-5 w-5" />
+                <div className="mt-6 flex flex-wrap gap-3">
+                  <Link href="/register" className="inline-flex h-10 px-6 items-center justify-center rounded-full bg-[var(--md-sys-color-primary)] text-[var(--md-sys-color-on-primary)] text-sm font-medium">
+                    Create account
+                    <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
-                  <Link
-                    href="/login"
-                    className="inline-flex items-center justify-center rounded-lg border border-white/30 px-8 py-3 text-base font-semibold text-white hover:bg-white/10 transition-colors"
-                  >
-                    Sign In to Account
+                  <Link href="/login" className="inline-flex h-10 px-6 items-center justify-center rounded-full bg-[var(--md-sys-color-surface-container-low)] border border-[var(--md-sys-color-outline-variant)] text-sm font-medium text-[var(--md-sys-color-on-surface)]">
+                    Sign in
                   </Link>
                 </div>
+                <div className="mt-6 flex flex-wrap gap-2">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--md-sys-color-surface-container-low)] border border-[var(--md-sys-color-outline-variant)] px-3 py-1.5 text-xs font-medium text-[var(--md-sys-color-on-surface-variant)]"><CheckCircle2 className="h-3.5 w-3.5" /> Free for students</span>
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--md-sys-color-surface-container-low)] border border-[var(--md-sys-color-outline-variant)] px-3 py-1.5 text-xs font-medium text-[var(--md-sys-color-on-surface-variant)]"><CheckCircle2 className="h-3.5 w-3.5" /> Verified alumni</span>
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--md-sys-color-surface-container-low)] border border-[var(--md-sys-color-outline-variant)] px-3 py-1.5 text-xs font-medium text-[var(--md-sys-color-on-surface-variant)]"><CheckCircle2 className="h-3.5 w-3.5" /> AI lab included</span>
+                </div>
+              </div>
 
-                <div className="mt-8 flex flex-wrap items-center justify-center gap-6 text-sm text-indigo-100">
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4" />
-                    Free for students
+              <div className="grid gap-3">
+                <div className="rounded-[20px] bg-[var(--md-sys-color-surface-container-low)] border border-[var(--md-sys-color-outline-variant)] p-4">
+                  <p className="text-xs font-medium tracking-widest uppercase text-[var(--md-sys-color-on-surface-variant)]">Today at AlumniNet</p>
+                  <div className="mt-3 grid grid-cols-3 gap-3">
+                    {stats.map((s) => (
+                      <div key={s.label} className="rounded-[16px] bg-[var(--md-sys-color-surface-container)] border border-[var(--md-sys-color-outline-variant)] p-3 text-center">
+                        <div className="text-[18px] font-medium text-[var(--md-sys-color-primary)]">{s.value}</div>
+                        <div className="text-xs text-[var(--md-sys-color-on-surface-variant)]">{s.label}</div>
+                      </div>
+                    ))}
                   </div>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4" />
-                    No credit card required
+                  <div className="mt-3 rounded-[16px] bg-[var(--md-sys-color-surface-container)] border border-[var(--md-sys-color-outline-variant)] p-3 flex items-center gap-3">
+                    <span className="h-9 w-9 rounded-full bg-[var(--md-sys-color-secondary-container)] grid place-items-center text-[var(--md-sys-color-on-secondary-container)]"><Users className="h-4 w-4" /></span>
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium text-[var(--md-sys-color-on-surface)]">Mentor match is live</p>
+                      <p className="text-xs text-[var(--md-sys-color-on-surface-variant)]">Get 3 tailored alumni suggestions from your profile.</p>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4" />
-                    AI-powered career guidance
+                </div>
+
+                <div className="rounded-[20px] bg-[var(--md-sys-color-surface-container-low)] border border-[var(--md-sys-color-outline-variant)] p-4">
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm font-medium text-[var(--md-sys-color-on-surface)]">How it works</p>
+                    <span className="text-xs px-2 py-1 rounded-full bg-[var(--md-sys-color-tertiary-container)] text-[var(--md-sys-color-on-tertiary-container)] font-medium">3 steps</span>
+                  </div>
+                  <div className="mt-3 grid gap-2 text-sm">
+                    <div className="flex gap-3 rounded-[12px] bg-[var(--md-sys-color-surface-container)] border border-[var(--md-sys-color-outline-variant)] p-3"><span className="h-6 w-6 rounded-full bg-[var(--md-sys-color-primary)] text-[var(--md-sys-color-on-primary)] grid place-items-center text-xs">1</span><span className="text-[var(--md-sys-color-on-surface)]">Create your profile</span></div>
+                    <div className="flex gap-3 rounded-[12px] bg-[var(--md-sys-color-surface-container)] border border-[var(--md-sys-color-outline-variant)] p-3"><span className="h-6 w-6 rounded-full bg-[var(--md-sys-color-primary)] text-[var(--md-sys-color-on-primary)] grid place-items-center text-xs">2</span><span className="text-[var(--md-sys-color-on-surface)]">Connect and request mentorship</span></div>
+                    <div className="flex gap-3 rounded-[12px] bg-[var(--md-sys-color-surface-container)] border border-[var(--md-sys-color-outline-variant)] p-3"><span className="h-6 w-6 rounded-full bg-[var(--md-sys-color-primary)] text-[var(--md-sys-color-on-primary)] grid place-items-center text-xs">3</span><span className="text-[var(--md-sys-color-on-surface)]">Learn, apply, and track progress</span></div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </section>
+
+        <section id="features" className="mx-auto max-w-[1120px] px-4 lg:px-6 mt-6">
+          <div className="rounded-[28px] bg-[var(--md-sys-color-surface-container-low)] border border-[var(--md-sys-color-outline-variant)] p-6 lg:p-8">
+            <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-3">
+              <div>
+                <h2 className="text-[22px] leading-7 font-normal text-[var(--md-sys-color-on-surface)]">Everything you need — without the noise.</h2>
+                <p className="mt-1 text-sm text-[var(--md-sys-color-on-surface-variant)]">Solid tools, same Material system you see inside the app.</p>
+              </div>
+              <span className="inline-flex h-7 items-center rounded-full bg-[var(--md-sys-color-secondary-container)] text-[var(--md-sys-color-on-secondary-container)] px-3 text-xs font-medium">4 core areas</span>
+            </div>
+            <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {features.map((f) => (
+                <div key={f.title} className="rounded-[20px] bg-[var(--md-sys-color-surface-container)] border border-[var(--md-sys-color-outline-variant)] p-5">
+                  <span className="h-10 w-10 rounded-[12px] bg-[var(--md-sys-color-surface-container-high)] border border-[var(--md-sys-color-outline-variant)] grid place-items-center">
+                    <f.icon className="h-5 w-5 text-[var(--md-sys-color-primary)]" />
+                  </span>
+                  <h3 className="mt-3 text-[16px] font-medium text-[var(--md-sys-color-on-surface)]">{f.title}</h3>
+                  <p className="mt-1 text-sm leading-5 text-[var(--md-sys-color-on-surface-variant)]">{f.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="community" className="mx-auto max-w-[1120px] px-4 lg:px-6 mt-6">
+          <div className="rounded-[28px] bg-[var(--md-sys-color-surface-container)] border border-[var(--md-sys-color-outline-variant)] p-6 lg:p-8">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+              <div>
+                <h2 className="text-[22px] font-normal text-[var(--md-sys-color-on-surface)]">Ready to join?</h2>
+                <p className="mt-1 text-sm text-[var(--md-sys-color-on-surface-variant)]">Create your free student account. No credit card, no spam.</p>
+                <div className="mt-4 flex flex-wrap gap-3">
+                  <Link href="/register" className="inline-flex h-10 px-6 items-center justify-center rounded-full bg-[var(--md-sys-color-primary)] text-[var(--md-sys-color-on-primary)] text-sm font-medium">Create account</Link>
+                  <Link href="/login" className="inline-flex h-10 px-6 items-center justify-center rounded-full border border-[var(--md-sys-color-outline)] text-sm font-medium text-[var(--md-sys-color-primary)]">Sign in</Link>
+                </div>
+              </div>
+              <div className="rounded-[20px] bg-[var(--md-sys-color-surface-container-low)] border border-[var(--md-sys-color-outline-variant)] p-4 lg:w-[360px]">
+                <p className="text-sm font-medium text-[var(--md-sys-color-on-surface)]">What students say</p>
+                <p className="mt-2 text-sm leading-5 text-[var(--md-sys-color-on-surface-variant)]">“Found a mentor in 2 days. The AI suggestions actually matched my stack.”</p>
+                <p className="mt-2 text-xs font-medium text-[var(--md-sys-color-on-surface-variant)]">— B.Tech, 2025</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div className="h-6" />
       </main>
 
-      {/* Footer */}
-      <footer className="border-t bg-gray-50 dark:bg-gray-900 dark:border-gray-800">
-        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-          <div className="grid gap-8 md:grid-cols-3">
-            <div>
-              <Link href="/" className="flex items-center gap-2">
-                <GraduationCap className="h-8 w-8 text-indigo-600" />
-                <span className="text-xl font-bold text-gray-900 dark:text-white">
-                  AlumniConnect
-                </span>
-              </Link>
-              <p className="mt-4 text-sm text-gray-600 dark:text-gray-400">
-                Connecting alumni, students, and professionals for a brighter future.
-              </p>
+      <footer id="about" className="border-t border-[var(--md-sys-color-outline-variant)] bg-[var(--md-sys-color-surface-container-low)]">
+        <div className="mx-auto max-w-[1120px] px-4 lg:px-6 py-8">
+          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+            <div className="flex items-center gap-3">
+              <span className="h-8 w-8 rounded-[10px] bg-[var(--md-sys-color-primary)] grid place-items-center"><GraduationCap className="h-4 w-4 text-[var(--md-sys-color-on-primary)]" /></span>
+              <span className="text-sm font-semibold">AlumniNet</span>
+              <span className="text-xs px-2 py-1 rounded-full bg-[var(--md-sys-color-secondary-container)] text-[var(--md-sys-color-on-secondary-container)]">{COLLEGE_NAME}</span>
             </div>
-
-            <div>
-              <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
-                {COLLEGE_NAME}
-              </h3>
-              <div className="mt-4 space-y-2 text-sm text-gray-600 dark:text-gray-400">
-                <div className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4" />
-                  <span>India</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Mail className="h-4 w-4" />
-                  <span>alumni@nit.edu</span>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
-                Quick Links
-              </h3>
-              <div className="mt-4 space-y-2 text-sm text-gray-600 dark:text-gray-400">
-                <Link href="/login" className="block hover:text-indigo-600 transition-colors">
-                  Login
-                </Link>
-                <Link href="/register" className="block hover:text-indigo-600 transition-colors">
-                  Register
-                </Link>
-                <Link href="/forgot-password" className="block hover:text-indigo-600 transition-colors">
-                  Reset Password
-                </Link>
-              </div>
+            <div className="flex flex-wrap gap-6 text-sm text-[var(--md-sys-color-on-surface-variant)]">
+              <a href="mailto:alumni@nit.edu" className="inline-flex items-center gap-2 hover:text-[var(--md-sys-color-on-surface)]"><Mail className="h-4 w-4" /> alumni@nit.edu</a>
+              <span className="inline-flex items-center gap-2"><MapPin className="h-4 w-4" /> India</span>
+              <Link href="/login" className="hover:text-[var(--md-sys-color-on-surface)]">Sign in</Link>
+              <Link href="/register" className="hover:text-[var(--md-sys-color-on-surface)]">Create account</Link>
             </div>
           </div>
-
-          <div className="mt-8 border-t pt-8 text-center text-sm text-gray-500 dark:text-gray-400 dark:border-gray-800">
-            &copy; {new Date().getFullYear()} AlumniConnect. All rights reserved.
-          </div>
+          <p className="mt-6 text-xs text-[var(--md-sys-color-on-surface-variant)]">© {new Date().getFullYear()} AlumniNet. Built with Material You.</p>
         </div>
       </footer>
     </div>
