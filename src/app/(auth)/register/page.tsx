@@ -172,100 +172,50 @@ export default function RegisterPage() {
 
   const handleSubmit = async () => {
     setIsLoading(true);
-
     try {
       const step2Data = step2Form.getValues();
       const step3Data = step3Form.getValues();
       const step4Data = step4Form.getValues();
 
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email: step2Data.email,
-        password: step2Data.password,
-        options: {
-          data: {
-            first_name: step2Data.first_name,
-            last_name: step2Data.last_name,
-            role: accountType,
-          },
-        },
-      });
-
-      if (authError) {
-        toast.error(authError.message);
-        return;
-      }
-
-      if (!authData.user) {
-        toast.error("Failed to create account");
-        return;
-      }
-
-      // Wait a moment for trigger to create public.users row
-      await new Promise((r) => setTimeout(r, 800));
-
-      // Ensure public.users row exists (trigger should have created it, but fallback if not)
-      const { error: userCheckError } = await supabase
-        .from("users")
-        .select("id")
-        .eq("id", authData.user.id)
-        .single();
-
-      if (userCheckError) {
-        // Fallback: try to create users row directly
-        await supabase.from("users").insert({
-          id: authData.user.id,
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
           email: step2Data.email,
-          role: accountType as any,
-          full_name: `${step2Data.first_name} ${step2Data.last_name}`,
-        });
-      }
-
-      if (accountType === "student") {
-        const { error: profileError } = await supabase.from("student_profiles").insert({
-          user_id: authData.user.id,
+          password: step2Data.password,
+          first_name: step2Data.first_name,
+          last_name: step2Data.last_name,
+          role: accountType,
           college: step3Data.college,
           department: step3Data.department,
           degree: step3Data.degree,
-          graduation_year: parseInt(step3Data.graduation_year),
+          graduation_year: step3Data.graduation_year,
           skills: selectedSkills,
           location: step4Data.location || "",
           about: step4Data.about || "",
-        });
-        if (profileError) {
-          console.error("student_profiles insert error:", profileError);
-          toast.error(`Failed to create profile: ${profileError.message}`);
-          return;
-        }
-      } else {
-        const { error: profileError } = await supabase.from("alumni_profiles").insert({
-          user_id: authData.user.id,
-          degree: step3Data.degree,
-          department: step3Data.department,
-          graduation_year: parseInt(step3Data.graduation_year),
-          skills: selectedSkills,
-          location: step4Data.location || "",
-          about: step4Data.about || "",
-          current_company: "",
-          current_designation: "",
-        });
-        if (profileError) {
-          console.error("alumni_profiles insert error:", profileError);
-          toast.error(`Failed to create profile: ${profileError.message}`);
-          return;
-        }
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        toast.error(data.error || "Failed to create account");
+        return;
       }
 
-      // If session exists, go to dashboard, else to login
-      const { data: sessionData } = await supabase.auth.getSession();
-      if (sessionData.session) {
-        toast.success("Account created successfully!");
-        router.push(accountType === "alumni" ? "/alumni" : "/student");
-      } else {
-        toast.success("Account created! Please check your email to verify, then sign in.");
+      // Auto sign-in after successful registration
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: step2Data.email,
+        password: step2Data.password,
+      });
+      if (signInError) {
+        toast.success("Account created! Please sign in.");
         router.push("/login");
+        return;
       }
-    } catch {
-      toast.error("An unexpected error occurred");
+      toast.success("Account created successfully!");
+      router.push(accountType === "alumni" ? "/alumni" : "/student");
+      router.refresh();
+    } catch (e: any) {
+      toast.error(e?.message || "An unexpected error occurred");
     } finally {
       setIsLoading(false);
     }
