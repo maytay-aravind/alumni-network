@@ -6,17 +6,32 @@ A modern full-stack platform connecting **Students**, **Alumni**, and **Admin** 
 
 ---
 
+## Architecture — Frontend & Backend Separated
+
+```
+alumni-network/
+├── src/                # Frontend (Next.js 16, Tailwind, Material You)
+│   ├── app/            # App Router + pages
+│   └── components/     # UI
+├── backend/            # Backend (Standalone Express, optional)
+│   ├── server.js       # Express entry (port 4000)
+│   ├── routes/         # auth.js, ai.js
+│   └── lib/            # supabase.js, gemini.js
+└── supabase/           # SQL schema & patches
+```
+
+- **Frontend:** Next.js handles UI and by default also serves `/api/*` (full-stack mode for simple deploy).
+- **Backend (separate):** `backend/` is a standalone Express server. Set `NEXT_PUBLIC_BACKEND_URL=http://localhost:4000` in frontend `.env.local` to make the frontend call the separate backend instead of Next.js API routes. This gives true separation for college demo (show two terminals: `npm run dev` in root and `npm run dev` in `backend/`).
+
 ## Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
-| Frontend | Next.js 16 (App Router), Tailwind CSS, shadcn/ui pattern |
-| Backend | Next.js API Routes, Supabase |
-| Database | PostgreSQL (Supabase) with RLS policies |
-| Auth | Supabase Auth (email/password) |
+| Frontend | Next.js 16 (App Router), Tailwind CSS, Material You |
+| Backend | Next.js API Routes **or** Express (`backend/`) — Supabase + Gemini |
+| Database | PostgreSQL (Supabase) with RLS |
+| Auth | Supabase Auth |
 | AI | Google Gemini (`gemini-2.0-flash`) |
-| Charts | Recharts |
-| Deployment | Vercel / any Node host |
 
 ---
 
