@@ -74,6 +74,7 @@ export default function StudentSettingsPage() {
   const [firstName, setFirstName] = React.useState("");
   const [lastName, setLastName] = React.useState("");
   const [avatarUrl, setAvatarUrl] = React.useState("");
+  const [uploading, setUploading] = React.useState(false);
   const [about, setAbout] = React.useState("");
   const [location, setLocation] = React.useState("");
   const [college, setCollege] = React.useState("");
@@ -173,36 +174,28 @@ export default function StudentSettingsPage() {
     if (!userId) return;
     setSaving(true);
     try {
-      const supabase = createClient();
       const fullName = `${firstName.trim()} ${lastName.trim()}`.trim();
-      // update users
-      const { error: userErr } = await supabase
-        .from("users")
-        .update({ full_name: fullName, avatar_url: avatarUrl || null } as never)
-        .eq("id", userId);
-      if (userErr) {
-        // not critical if fails due to RLS, still try profile
-        console.warn("users update", userErr);
-      }
-      // update student_profiles - use upsert to be safe
-      const { error: profErr } = await supabase.from("student_profiles").upsert(
-        {
-          user_id: userId,
-          about: about,
-          location: location,
-          college: college,
-          department: department,
-          graduation_year: typeof graduationYear === "number" ? graduationYear : graduationYear ? parseInt(String(graduationYear)) : null,
-          linkedin: linkedin || null,
-          github: github || null,
-          // keep skills as is unless we want to allow editing? spec says display only
-          updated_at: new Date().toISOString(),
-        } as never,
-        { onConflict: "user_id" }
-      );
-      if (profErr) throw profErr;
-      // also update auth metadata
+      const res = await fetch("/api/profile/update", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId,
+          full_name: fullName,
+          avatar_url: avatarUrl || null,
+          about,
+          location,
+          college,
+          department,
+          graduation_year: graduationYear,
+          linkedin,
+          github,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to update profile");
+      // also update auth metadata (client-side, no RLS)
       try {
+        const supabase = createClient();
         await supabase.auth.updateUser({ data: { full_name: fullName } });
       } catch {}
       toast.success("Profile updated successfully");
@@ -314,14 +307,41 @@ export default function StudentSettingsPage() {
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0 w-full">
-                  <Label className="text-[12px] tracking-wide text-[var(--md-sys-color-on-surface-variant)]">Avatar URL</Label>
-                  <Input
-                    value={avatarUrl}
-                    onChange={(e) => setAvatarUrl(e.target.value)}
-                    placeholder="https://..."
-                    className="mt-1 rounded-[12px] bg-[var(--md-sys-color-surface-container-low)] border-[var(--md-sys-color-outline-variant)]"
-                  />
-                  <p className="text-[11px] text-[var(--md-sys-color-on-surface-variant)] mt-1">Paste an image URL. Leave empty to use initials.</p>
+                  <Label className="text-[12px] tracking-wide text-[var(--md-sys-color-on-surface-variant)]">Profile photo</Label>
+                  <div className="mt-1 flex items-center gap-2">
+                    <label className="inline-flex h-10 px-5 items-center justify-center rounded-full bg-[var(--md-sys-color-secondary-container)] text-[var(--md-sys-color-on-secondary-container)] text-sm font-medium cursor-pointer hover:opacity-90">
+                      {uploading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                      {uploading ? "Uploading..." : "Upload photo"}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (!file || !userId) return;
+                          setUploading(true);
+                          try {
+                            const fd = new FormData();
+                            fd.append("file", file);
+                            fd.append("userId", userId);
+                            const res = await fetch("/api/upload/avatar", { method: "POST", body: fd });
+                            const data = await res.json();
+                            if (!res.ok) throw new Error(data.error || "Upload failed");
+                            setAvatarUrl(data.url);
+                            toast.success("Photo uploaded");
+                          } catch (err: any) {
+                            toast.error(err.message || "Upload failed");
+                          } finally {
+                            setUploading(false);
+                          }
+                        }}
+                      />
+                    </label>
+                    {avatarUrl ? (
+                      <Button variant="text" size="sm" onClick={() => setAvatarUrl("")}>Remove</Button>
+                    ) : null}
+                  </div>
+                  <p className="text-[11px] text-[var(--md-sys-color-on-surface-variant)] mt-1">JPG, PNG or WebP, max 5MB. Stored in Supabase Storage.</p>
                 </div>
               </div>
 

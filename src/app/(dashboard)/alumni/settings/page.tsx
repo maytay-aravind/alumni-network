@@ -74,6 +74,7 @@ export default function AlumniSettingsPage() {
   const [firstName, setFirstName] = React.useState("");
   const [lastName, setLastName] = React.useState("");
   const [avatarUrl, setAvatarUrl] = React.useState("");
+  const [uploading, setUploading] = React.useState(false);
   const [about, setAbout] = React.useState("");
   const [location, setLocation] = React.useState("");
   const [company, setCompany] = React.useState("");
@@ -179,38 +180,24 @@ export default function AlumniSettingsPage() {
     if (!userId) return;
     setSaving(true);
     try {
-      const supabase = createClient();
       const fullName = `${firstName.trim()} ${lastName.trim()}`.trim();
-      const { error: userErr } = await supabase
-        .from("users")
-        .update({ full_name: fullName, avatar_url: avatarUrl || null } as never)
-        .eq("id", userId);
-      if (userErr) console.warn(userErr);
-
-      const { error: profErr } = await supabase.from("alumni_profiles").upsert(
-        {
-          user_id: userId,
-          about: about,
-          location: location,
-          current_company: company,
-          current_designation: designation,
-          industry: industry,
-          department: department,
-          graduation_year: typeof graduationYear === "number" ? graduationYear : graduationYear ? parseInt(String(graduationYear)) : null,
-          years_of_experience: typeof yearsExp === "number" ? yearsExp : yearsExp ? parseInt(String(yearsExp)) : 0,
-          linkedin: linkedin || null,
-          github: github || null,
-          portfolio: portfolio || null,
-          mentorship_available: mentorshipAvailable,
-          is_mentor: isMentor,
-          updated_at: new Date().toISOString(),
-        } as never,
-        { onConflict: "user_id" }
-      );
+      const res = await fetch("/api/profile/update", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, full_name: fullName, avatar_url: avatarUrl || null, about, location, linkedin, github }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      // Also update alumni-specific fields via direct supabase (alumni_profiles doesn't have recursion)
+      const supabase = createClient();
+      const { error: profErr } = await supabase.from("alumni_profiles").upsert({
+        user_id: userId, current_company: company, current_designation: designation, industry, department,
+        graduation_year: typeof graduationYear === "number" ? graduationYear : graduationYear ? parseInt(String(graduationYear)) : null,
+        years_of_experience: typeof yearsExp === "number" ? yearsExp : yearsExp ? parseInt(String(yearsExp)) : 0,
+        portfolio: portfolio || null, mentorship_available: mentorshipAvailable, is_mentor: isMentor,
+      } as never, { onConflict: "user_id" });
       if (profErr) throw profErr;
-      try {
-        await supabase.auth.updateUser({ data: { full_name: fullName } });
-      } catch {}
+      try { await supabase.auth.updateUser({ data: { full_name: fullName } }); } catch {}
       toast.success("Profile updated successfully");
     } catch (e: any) {
       toast.error(e?.message || "Failed to update profile");
@@ -306,14 +293,30 @@ export default function AlumniSettingsPage() {
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0 w-full">
-                  <Label className="text-[12px] tracking-wide text-[var(--md-sys-color-on-surface-variant)]">Avatar URL</Label>
-                  <Input
-                    value={avatarUrl}
-                    onChange={(e) => setAvatarUrl(e.target.value)}
-                    placeholder="https://..."
-                    className="mt-1 rounded-[12px] bg-[var(--md-sys-color-surface-container-low)] border-[var(--md-sys-color-outline-variant)]"
-                  />
-                  <p className="text-[11px] text-[var(--md-sys-color-on-surface-variant)] mt-1">Paste an image URL.</p>
+                  <Label className="text-[12px] tracking-wide text-[var(--md-sys-color-on-surface-variant)]">Profile photo</Label>
+                  <div className="mt-1 flex items-center gap-2">
+                    <label className="inline-flex h-10 px-5 items-center justify-center rounded-full bg-[var(--md-sys-color-secondary-container)] text-[var(--md-sys-color-on-secondary-container)] text-sm font-medium cursor-pointer">
+                      {uploading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                      {uploading ? "Uploading..." : "Upload photo"}
+                      <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file || !userId) return;
+                        setUploading(true);
+                        try {
+                          const fd = new FormData();
+                          fd.append("file", file);
+                          fd.append("userId", userId);
+                          const res = await fetch("/api/upload/avatar", { method: "POST", body: fd });
+                          const data = await res.json();
+                          if (!res.ok) throw new Error(data.error);
+                          setAvatarUrl(data.url);
+                          toast.success("Photo uploaded");
+                        } catch (err: any) { toast.error(err.message); } finally { setUploading(false); }
+                      }} />
+                    </label>
+                    {avatarUrl ? <Button variant="text" size="sm" onClick={() => setAvatarUrl("")}>Remove</Button> : null}
+                  </div>
+                  <p className="text-[11px] text-[var(--md-sys-color-on-surface-variant)] mt-1">JPG, PNG or WebP, max 5MB.</p>
                 </div>
               </div>
 
