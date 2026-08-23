@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Eye, EyeOff, Loader2, GraduationCap, Briefcase, Shield } from "lucide-react";
+import { Eye, EyeOff, Loader2, GraduationCap, Briefcase, Shield, Check } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabase/client";
@@ -77,7 +77,6 @@ export default function LoginPage() {
       });
 
       if (error) {
-        // Provide helpful message for demo accounts
         if (error.message.includes("Invalid login credentials")) {
           toast.error("Invalid credentials. If using demo, the account may not exist yet — try registering first or contact admin.");
         } else {
@@ -86,7 +85,6 @@ export default function LoginPage() {
         return;
       }
 
-      // Fetch real role from public.users
       const { data: userRow } = await supabase
         .from("users")
         .select("role")
@@ -95,7 +93,6 @@ export default function LoginPage() {
 
       const realRole = (userRow?.role as string) || authData.user.user_metadata?.role || data.role;
 
-      // If user selected a role that doesn't match their actual role, warn but still allow
       if (data.role !== realRole) {
         toast(`You are registered as ${realRole}, redirecting there.`, { duration: 3000 } as any);
       }
@@ -119,49 +116,56 @@ export default function LoginPage() {
 
   return (
     <div className="space-y-6">
+      {/* Header */}
       <div>
-        <h2 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+        <h2 className="text-[22px] leading-7 font-medium tracking-tight text-[var(--md-sys-color-on-surface)]">
           Sign in to your account
         </h2>
-        <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+        <p className="mt-1.5 text-sm leading-5 text-[var(--md-sys-color-on-surface-variant)]">
           Welcome back! Please enter your credentials.
         </p>
       </div>
 
-      <div className="space-y-3">
-        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+      {/* Role selector — M3 Segmented Button */}
+      <div className="space-y-2">
+        <label className="text-xs font-medium tracking-[0.1px] text-[var(--md-sys-color-on-surface-variant)]">
           Select your role
         </label>
-        <div className="grid grid-cols-3 gap-2">
-          {roles.map((role) => (
-            <button
-              key={role.value}
-              type="button"
-              onClick={() => setValue("role", role.value)}
-              className={cn(
-                "flex flex-col items-center gap-2 rounded-xl border-2 p-3 text-center transition-all",
-                selectedRole === role.value
-                  ? "border-indigo-600 bg-indigo-50 text-indigo-700 dark:border-indigo-400 dark:bg-indigo-950 dark:text-indigo-300"
-                  : "border-gray-200 bg-white text-gray-600 hover:border-gray-300 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400"
-              )}
-            >
-              <role.icon
+        <div className="flex rounded-full border border-[var(--md-sys-color-outline-variant)] bg-[var(--md-sys-color-surface-container-low)] p-1 gap-1">
+          {roles.map((role) => {
+            const isSelected = selectedRole === role.value;
+            return (
+              <button
+                key={role.value}
+                type="button"
+                onClick={() => setValue("role", role.value)}
                 className={cn(
-                  "h-6 w-6",
-                  selectedRole === role.value
-                    ? "text-indigo-600 dark:text-indigo-400"
-                    : "text-gray-400 dark:text-gray-500"
+                  "flex flex-1 items-center justify-center gap-1.5 rounded-full h-9 px-3 text-sm font-medium transition-colors",
+                  isSelected
+                    ? "bg-[var(--md-sys-color-secondary-container)] text-[var(--md-sys-color-on-secondary-container)] shadow-sm"
+                    : "text-[var(--md-sys-color-on-surface-variant)] hover:bg-[var(--md-sys-color-surface-container)]"
                 )}
-              />
-              <span className="text-sm font-medium">{role.label}</span>
-            </button>
-          ))}
+                aria-pressed={isSelected}
+              >
+                {isSelected ? (
+                  <Check className="h-4 w-4 shrink-0" />
+                ) : (
+                  <role.icon className="h-4 w-4 shrink-0" />
+                )}
+                <span>{role.label}</span>
+              </button>
+            );
+          })}
         </div>
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <div className="space-y-2">
-          <label htmlFor="email" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
+        {/* Email */}
+        <div className="space-y-1.5">
+          <label
+            htmlFor="email"
+            className="text-xs font-medium tracking-[0.1px] text-[var(--md-sys-color-on-surface-variant)]"
+          >
             Email address
           </label>
           <input
@@ -169,21 +173,26 @@ export default function LoginPage() {
             type="email"
             autoComplete="email"
             {...register("email")}
-            className={cn(
-              "flex h-10 w-full rounded-lg border bg-white px-3 py-2 text-sm transition-colors placeholder:text-gray-400 focus:outline-none focus:ring-2 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500",
-              errors.email
-                ? "border-red-500 focus:ring-red-500"
-                : "border-gray-200 focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700"
-            )}
             placeholder="you@example.com"
+            className={cn(
+              "flex h-14 w-full rounded-[16px] border bg-[var(--md-sys-color-surface-container-low)] px-4 text-sm text-[var(--md-sys-color-on-surface)] placeholder:text-[var(--md-sys-color-on-surface-variant)]/60 focus:outline-none focus:ring-2 transition-colors",
+              errors.email
+                ? "border-[var(--md-sys-color-error)] focus:border-[var(--md-sys-color-error)] focus:ring-[var(--md-sys-color-error)]/20"
+                : "border-[var(--md-sys-color-outline-variant)] focus:border-[var(--md-sys-color-primary)] focus:ring-[var(--md-sys-color-primary)]/20"
+            )}
+            aria-invalid={!!errors.email}
           />
           {errors.email && (
-            <p className="text-xs text-red-500">{errors.email.message}</p>
+            <p className="text-xs leading-4 text-[var(--md-sys-color-error)]">{errors.email.message}</p>
           )}
         </div>
 
-        <div className="space-y-2">
-          <label htmlFor="password" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+        {/* Password */}
+        <div className="space-y-1.5">
+          <label
+            htmlFor="password"
+            className="text-xs font-medium tracking-[0.1px] text-[var(--md-sys-color-on-surface-variant)]"
+          >
             Password
           </label>
           <div className="relative">
@@ -192,48 +201,52 @@ export default function LoginPage() {
               type={showPassword ? "text" : "password"}
               autoComplete="current-password"
               {...register("password")}
-              className={cn(
-                "flex h-10 w-full rounded-lg border bg-white px-3 py-2 pr-10 text-sm transition-colors placeholder:text-gray-400 focus:outline-none focus:ring-2 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500",
-                errors.password
-                  ? "border-red-500 focus:ring-red-500"
-                  : "border-gray-200 focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700"
-              )}
               placeholder="Enter your password"
+              className={cn(
+                "flex h-14 w-full rounded-[16px] border bg-[var(--md-sys-color-surface-container-low)] px-4 pr-11 text-sm text-[var(--md-sys-color-on-surface)] placeholder:text-[var(--md-sys-color-on-surface-variant)]/60 focus:outline-none focus:ring-2 transition-colors",
+                errors.password
+                  ? "border-[var(--md-sys-color-error)] focus:border-[var(--md-sys-color-error)] focus:ring-[var(--md-sys-color-error)]/20"
+                  : "border-[var(--md-sys-color-outline-variant)] focus:border-[var(--md-sys-color-primary)] focus:ring-[var(--md-sys-color-primary)]/20"
+              )}
+              aria-invalid={!!errors.password}
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+              className="absolute right-2 top-1/2 -translate-y-1/2 grid h-9 w-9 place-items-center rounded-full text-[var(--md-sys-color-on-surface-variant)] hover:bg-[var(--md-sys-color-surface-container)] hover:text-[var(--md-sys-color-on-surface)] transition-colors"
+              aria-label={showPassword ? "Hide password" : "Show password"}
             >
               {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
           </div>
           {errors.password && (
-            <p className="text-xs text-red-500">{errors.password.message}</p>
+            <p className="text-xs leading-4 text-[var(--md-sys-color-error)]">{errors.password.message}</p>
           )}
         </div>
 
-        <div className="flex items-center justify-between">
-          <label className="flex items-center gap-2">
+        {/* Remember + Forgot — M3 checkbox + text button */}
+        <div className="flex items-center justify-between gap-3">
+          <label className="flex items-center gap-2 cursor-pointer select-none">
             <input
               type="checkbox"
               {...register("remember_me")}
-              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+              className="h-[18px] w-[18px] rounded-[4px] border border-[var(--md-sys-color-outline)] bg-[var(--md-sys-color-surface-container-low)] text-[var(--md-sys-color-primary)] focus:ring-2 focus:ring-[var(--md-sys-color-primary)]/20 focus:ring-offset-0"
             />
-            <span className="text-sm text-gray-600 dark:text-gray-400">Remember me</span>
+            <span className="text-sm text-[var(--md-sys-color-on-surface-variant)]">Remember me</span>
           </label>
           <Link
             href="/forgot-password"
-            className="text-sm font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400"
+            className="inline-flex h-8 items-center justify-center rounded-full px-3 text-sm font-medium text-[var(--md-sys-color-primary)] hover:bg-[var(--md-sys-color-primary)]/8 transition-colors"
           >
             Forgot password?
           </Link>
         </div>
 
+        {/* Sign in — M3 Filled button */}
         <button
           type="submit"
           disabled={isLoading}
-          className="flex w-full items-center justify-center rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-colors"
+          className="flex w-full h-10 items-center justify-center rounded-full bg-[var(--md-sys-color-primary)] px-6 text-sm font-medium text-[var(--md-sys-color-on-primary)] hover:bg-[#4539A0] focus:outline-none focus:ring-2 focus:ring-[var(--md-sys-color-primary)] focus:ring-offset-2 focus:ring-offset-[var(--md-sys-color-surface-container-low)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
           {isLoading ? (
             <>
@@ -246,37 +259,36 @@ export default function LoginPage() {
         </button>
       </form>
 
+      {/* Divider */}
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-gray-200 dark:border-gray-700" />
+          <div className="w-full border-t border-[var(--md-sys-color-outline-variant)]" />
         </div>
-        <div className="relative flex justify-center text-sm">
-          <span className="bg-white px-2 text-gray-500 dark:bg-gray-950 dark:text-gray-400">
+        <div className="relative flex justify-center">
+          <span className="bg-[var(--md-sys-color-surface-container-low)] px-3 text-[11px] font-medium tracking-[0.5px] uppercase text-[var(--md-sys-color-on-surface-variant)]">
             or try demo credentials
           </span>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-2">
+      {/* Demo credentials — M3 tonal cards */}
+      <div className="grid gap-2">
         {demoCredentials.map((cred) => (
           <button
             key={cred.role}
             type="button"
             onClick={() => fillDemoCredentials(cred.email, cred.password)}
-            className="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm transition-colors hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-750"
+            className="flex items-center justify-between rounded-[16px] border border-[var(--md-sys-color-outline-variant)] bg-[var(--md-sys-color-surface-container)] px-4 py-3 text-left hover:bg-[var(--md-sys-color-surface-container-high)] transition-colors"
           >
-            <span className="font-medium text-gray-700 dark:text-gray-300">{cred.role}</span>
-            <span className="text-xs text-gray-500 dark:text-gray-400">{cred.email}</span>
+            <span className="text-sm font-medium text-[var(--md-sys-color-on-surface)]">{cred.role}</span>
+            <span className="text-xs font-medium text-[var(--md-sys-color-on-surface-variant)]">{cred.email}</span>
           </button>
         ))}
       </div>
 
-      <p className="text-center text-sm text-gray-600 dark:text-gray-400">
+      <p className="text-center text-sm text-[var(--md-sys-color-on-surface-variant)]">
         Don&apos;t have an account?{" "}
-        <Link
-          href="/register"
-          className="font-semibold text-indigo-600 hover:text-indigo-500 dark:text-indigo-400"
-        >
+        <Link href="/register" className="font-medium text-[var(--md-sys-color-primary)] hover:underline">
           Register here
         </Link>
       </p>
