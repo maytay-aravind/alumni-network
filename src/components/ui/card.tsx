@@ -1,23 +1,35 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 
-const Card = React.forwardRef<HTMLDivElement, React.ComponentProps<"div">>(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn("rounded-[28px] bg-white border border-[#E7E0EC] shadow-[0_1px_3px_rgba(0,0,0,0.08),0_4px_12px_rgba(0,0,0,0.05)] text-[#1D1B20]", className)} {...props} />
-));
+const Card = React.forwardRef<HTMLDivElement, React.ComponentProps<"div"> & { variant?: "elevated" | "outlined" | "filled" }>(
+  ({ className, variant = "elevated", ...props }, ref) => (
+    <div
+      ref={ref}
+      className={cn(
+        "rounded-[16px] text-[var(--md-sys-color-on-surface)]",
+        variant === "elevated" && "bg-[var(--md-sys-color-surface-container-low)] border border-transparent shadow-[var(--md-elevation-1)]",
+        variant === "outlined" && "bg-[var(--md-sys-color-surface)] border border-[var(--md-sys-color-outline-variant)]",
+        variant === "filled" && "bg-[var(--md-sys-color-surface-container)] border border-transparent",
+        className
+      )}
+      {...props}
+    />
+  )
+);
 Card.displayName = "Card";
 
 const CardHeader = React.forwardRef<HTMLDivElement, React.ComponentProps<"div">>(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn("flex flex-col space-y-1.5 p-6", className)} {...props} />
+  <div ref={ref} className={cn("flex flex-col gap-1 p-6 pb-3", className)} {...props} />
 ));
 CardHeader.displayName = "CardHeader";
 
 const CardTitle = React.forwardRef<HTMLDivElement, React.ComponentProps<"div">>(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn("font-semibold leading-none tracking-tight text-[#1D1B20]", className)} {...props} />
+  <div ref={ref} className={cn("text-[16px] font-medium leading-6 tracking-[0.15px] text-[var(--md-sys-color-on-surface)]", className)} {...props} />
 ));
 CardTitle.displayName = "CardTitle";
 
 const CardDescription = React.forwardRef<HTMLDivElement, React.ComponentProps<"div">>(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn("text-sm text-[#49454F]", className)} {...props} />
+  <div ref={ref} className={cn("text-[14px] leading-5 text-[var(--md-sys-color-on-surface-variant)]", className)} {...props} />
 ));
 CardDescription.displayName = "CardDescription";
 

@@ -1,42 +1,84 @@
 @import "tailwindcss";
 
+/* Material You 2024 — Pure, no gloss/tint. Solid surfaces, shadow elevation, expressive shapes */
+
 :root {
-  --background: #fef7ff;
-  --foreground: #1d1b20;
-  --card: #ffffff;
-  --card-foreground: #1d1b20;
-  --popover: #ffffff;
-  --popover-foreground: #1d1b20;
-  --primary: #6750a4;
-  --primary-foreground: #ffffff;
-  --secondary: #e8def8;
-  --secondary-foreground: #1d192b;
-  --muted: #f3eff4;
-  --muted-foreground: #49454f;
-  --accent: #eaddff;
-  --accent-foreground: #21005d;
-  --destructive: #ba1a1a;
-  --destructive-foreground: #ffffff;
-  --border: #e7e0ec;
-  --input: #e7e0ec;
-  --ring: #6750a4;
-  --radius: 1rem;
-  --sidebar-bg: #f3edf7;
-  --sidebar-text: #49454f;
-  --sidebar-active: #6750a4;
-  --sidebar-active-bg: #eaddff;
-  --header-bg: #ffffff;
-  --success: #386a20;
-  --success-foreground: #ffffff;
-  --warning: #7c4d00;
-  --warning-foreground: #ffffff;
-  --info: #005ac1;
-  --info-foreground: #ffffff;
-  --surface: #fef7ff;
-  --surface-container: #f3eff4;
-  --surface-container-high: #ece6f0;
-  --outline: #79747e;
-  --outline-variant: #cac4d0;
+  /* M3 sys colors — light theme, tonal */
+  --md-sys-color-primary: #4F46A8;
+  --md-sys-color-on-primary: #FFFFFF;
+  --md-sys-color-primary-container: #E3DCFF;
+  --md-sys-color-on-primary-container: #1A0E62;
+
+  --md-sys-color-secondary: #5B5D72;
+  --md-sys-color-on-secondary: #FFFFFF;
+  --md-sys-color-secondary-container: #E0E1F9;
+  --md-sys-color-on-secondary-container: #181A2C;
+
+  --md-sys-color-tertiary: #77536D;
+  --md-sys-color-on-tertiary: #FFFFFF;
+  --md-sys-color-tertiary-container: #FFD8ED;
+  --md-sys-color-on-tertiary-container: #311023;
+
+  --md-sys-color-error: #BA1A1A;
+  --md-sys-color-on-error: #FFFFFF;
+  --md-sys-color-error-container: #FFDAD6;
+  --md-sys-color-on-error-container: #410002;
+
+  --md-sys-color-background: #FFFBFF;
+  --md-sys-color-on-background: #1C1B1F;
+  --md-sys-color-surface: #FFFBFF;
+  --md-sys-color-on-surface: #1C1B1F;
+  --md-sys-color-surface-variant: #E6E0EC;
+  --md-sys-color-on-surface-variant: #49454F;
+  --md-sys-color-surface-container-lowest: #FFFFFF;
+  --md-sys-color-surface-container-low: #F7F2FA;
+  --md-sys-color-surface-container: #F2ECF4;
+  --md-sys-color-surface-container-high: #EDE6F0;
+  --md-sys-color-surface-container-highest: #E6E0E9;
+
+  --md-sys-color-outline: #79747E;
+  --md-sys-color-outline-variant: #CAC4D0;
+  --md-sys-color-scrim: #000000;
+  --md-sys-color-inverse-surface: #313034;
+  --md-sys-color-inverse-on-surface: #F4EFF4;
+  --md-sys-color-inverse-primary: #C9BFFF;
+
+  /* Shadcn aliases mapped to M3 */
+  --background: var(--md-sys-color-background);
+  --foreground: var(--md-sys-color-on-background);
+  --card: var(--md-sys-color-surface-container-low);
+  --card-foreground: var(--md-sys-color-on-surface);
+  --popover: var(--md-sys-color-surface-container);
+  --popover-foreground: var(--md-sys-color-on-surface);
+  --primary: var(--md-sys-color-primary);
+  --primary-foreground: var(--md-sys-color-on-primary);
+  --secondary: var(--md-sys-color-secondary-container);
+  --secondary-foreground: var(--md-sys-color-on-secondary-container);
+  --muted: var(--md-sys-color-surface-container);
+  --muted-foreground: var(--md-sys-color-on-surface-variant);
+  --accent: var(--md-sys-color-tertiary-container);
+  --accent-foreground: var(--md-sys-color-on-tertiary-container);
+  --destructive: var(--md-sys-color-error);
+  --destructive-foreground: var(--md-sys-color-on-error);
+  --border: var(--md-sys-color-outline-variant);
+  --input: var(--md-sys-color-outline-variant);
+  --ring: var(--md-sys-color-primary);
+  --radius: 16px;
+
+  /* M3 shape */
+  --md-sys-shape-corner-none: 0px;
+  --md-sys-shape-corner-extra-small: 4px;
+  --md-sys-shape-corner-small: 8px;
+  --md-sys-shape-corner-medium: 12px;
+  --md-sys-shape-corner-large: 16px;
+  --md-sys-shape-corner-extra-large: 28px;
+  --md-sys-shape-corner-full: 9999px;
+
+  /* Elevation — shadows, no tints */
+  --md-elevation-0: none;
+  --md-elevation-1: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.08);
+  --md-elevation-2: 0 2px 6px rgba(0,0,0,0.12), 0 1px 3px rgba(0,0,0,0.08);
+  --md-elevation-3: 0 4px 12px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.10);
 }
 
 @theme inline {
@@ -59,50 +101,54 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --radius-sm: calc(var(--radius) - 8px);
-  --radius-md: calc(var(--radius) - 4px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 8px);
-  --radius-2xl: calc(var(--radius) + 12px);
-  --radius-3xl: calc(var(--radius) + 16px);
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --radius-sm: var(--md-sys-shape-corner-small);
+  --radius-md: var(--md-sys-shape-corner-medium);
+  --radius-lg: var(--md-sys-shape-corner-large);
+  --radius-xl: var(--md-sys-shape-corner-extra-large);
+  --font-sans: "Google Sans", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Google Sans Display", "Inter", sans-serif;
 }
+
+* { border-color: var(--border); }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--md-sys-color-background);
+  color: var(--md-sys-color-on-background);
   font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  letter-spacing: -0.01em;
 }
 
-/* Material You elevation + motion */
-.card-elevated {
-  background: var(--card);
-  border-radius: 24px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.05);
-}
-.card-outlined {
-  background: var(--card);
-  border: 1px solid var(--outline-variant);
-  border-radius: 16px;
-}
-.btn-pill {
-  border-radius: 9999px;
-}
-.m3-surface {
-  background: var(--surface-container);
-  border-radius: 28px;
-}
+/* M3 Typescale */
+.md-display-large { font-size: 57px; line-height: 64px; font-weight: 400; letter-spacing: -0.25px; }
+.md-headline-large { font-size: 32px; line-height: 40px; font-weight: 400; }
+.md-title-large { font-size: 22px; line-height: 28px; font-weight: 400; }
+.md-title-medium { font-size: 16px; line-height: 24px; font-weight: 500; letter-spacing: 0.15px; }
+.md-label-large { font-size: 14px; line-height: 20px; font-weight: 500; letter-spacing: 0.1px; }
+.md-body-large { font-size: 16px; line-height: 24px; font-weight: 400; letter-spacing: 0.5px; }
+.md-body-medium { font-size: 14px; line-height: 20px; font-weight: 400; letter-spacing: 0.25px; }
 
-@keyframes animate-in {
-  from { opacity: 0; transform: scale(0.96) translateY(4px); }
-  to { opacity: 1; transform: scale(1) translateY(0); }
-}
-@keyframes fade-in-0 { from { opacity: 0; } to { opacity: 1; } }
-@keyframes zoom-in-95 { from { transform: scale(0.95); } to { transform: scale(1); } }
-@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
-.animate-in { animation: animate-in 0.3s cubic-bezier(0.2, 0, 0, 1); }
-.fade-in-0 { animation: fade-in-0 0.2s ease-out; }
-.zoom-in-95 { animation: zoom-in-95 0.2s ease-out; }
-.animate-spin { animation: spin 1s linear infinite; }
-.animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+/* M3 elevation helpers — solid, no tint */
+.m3-elevated { background: var(--md-sys-color-surface-container-low); box-shadow: var(--md-elevation-1); border: 1px solid transparent; }
+.m3-elevated-2 { background: var(--md-sys-color-surface-container); box-shadow: var(--md-elevation-2); }
+.m3-outlined { background: var(--md-sys-color-surface); border: 1px solid var(--md-sys-color-outline-variant); }
+.m3-filled { background: var(--md-sys-color-surface-container-high); }
+
+/* Focus */
+*:focus-visible { outline: 3px solid var(--md-sys-color-primary); outline-offset: 2px; }
+
+/* Motion — M3 easing */
+.m3-motion { transition: all 200ms cubic-bezier(0.2, 0, 0, 1); }
+.m3-motion-emphasized { transition: all 500ms cubic-bezier(0.2, 0, 0, 1); }
+
+/* Scrollbar — minimal */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { background: var(--md-sys-color-outline-variant); border-radius: var(--md-sys-shape-corner-full); }
+::-webkit-scrollbar-track { background: transparent; }
+
+/* Animations */
+@keyframes m3-in { from { opacity: 0; transform: translateY(8px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes m3-fade { from { opacity: 0; } to { opacity: 1; } }
+.animate-in { animation: m3-in 300ms cubic-bezier(0.2, 0, 0, 1); }
+.fade-in { animation: m3-fade 200ms ease-out; }

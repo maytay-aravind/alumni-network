@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Menu, Bell, LogOut, Settings, User, ChevronDown } from "lucide-react";
+import { Menu, Bell, LogOut, Settings, User, Search } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
 import type { UserRole } from "@/types";
 import { Avatar, AvatarImage, AvatarFallback, getInitials } from "@/components/ui/avatar";
@@ -14,47 +14,60 @@ interface NavbarProps {
 export default function Navbar({ user, onMenuToggle }: NavbarProps) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const displayName = user?.profile ? `${user.profile.first_name} ${user.profile.last_name}` : user?.email || "Guest";
+  const displayName = user?.profile ? `${user.profile.first_name} ${user.profile.last_name}` : user?.email?.split('@')[0] || "Guest";
+
   return (
-    <header className="sticky top-0 z-30">
-      <div className="flex h-[64px] items-center justify-between bg-[#FFFBFE]/80 backdrop-blur-xl border-b border-[#E7E0EC] px-4 lg:px-6">
-        <div className="flex items-center gap-3">
-          <button type="button" onClick={onMenuToggle} className="grid h-10 w-10 place-items-center rounded-full text-[#49454F] hover:bg-[#F3EDF7] lg:hidden transition-colors">
+    <header className="sticky top-0 z-30 bg-[var(--md-sys-color-surface)] border-b border-[var(--md-sys-color-outline-variant)]">
+      <div className="flex h-[64px] items-center justify-between px-4 lg:px-6 gap-4">
+        <div className="flex items-center gap-3 min-w-0">
+          <button onClick={onMenuToggle} className="h-10 w-10 rounded-full grid place-items-center bg-[var(--md-sys-color-surface-container)] text-[var(--md-sys-color-on-surface-variant)] hover:bg-[var(--md-sys-color-surface-container-high)] lg:hidden">
             <Menu className="h-5 w-5" />
           </button>
-          <h2 className="hidden sm:block text-[15px] font-medium text-[#1D1B20]">
-            {user?.role === "admin" && "Admin Dashboard"}
-            {user?.role === "student" && "Student Portal"}
-            {user?.role === "alumni" && "Alumni Portal"}
-            {!user && "Alumni Network"}
-          </h2>
+          <h1 className="hidden md:block text-[22px] font-normal leading-7 tracking-tight text-[var(--md-sys-color-on-surface)]">
+            {user?.role === "admin" ? "Admin console" : user?.role === "alumni" ? "Alumni space" : "Student home"}
+          </h1>
         </div>
-        <div className="flex items-center gap-1">
-          <button type="button" className="relative grid h-10 w-10 place-items-center rounded-full text-[#49454F] hover:bg-[#F3EDF7] transition-colors">
+
+        <div className="flex items-center gap-2">
+          <div className="hidden md:flex items-center gap-2 h-10 rounded-full bg-[var(--md-sys-color-surface-container-high)] border border-[var(--md-sys-color-outline-variant)] px-4">
+            <Search className="h-4 w-4 text-[var(--md-sys-color-on-surface-variant)]" />
+            <input placeholder="Search" className="bg-transparent outline-none text-sm placeholder:text-[var(--md-sys-color-on-surface-variant)] w-40" />
+          </div>
+
+          <button className="h-10 w-10 rounded-full grid place-items-center bg-[var(--md-sys-color-surface-container)] text-[var(--md-sys-color-on-surface-variant)] hover:bg-[var(--md-sys-color-surface-container-high)] relative">
             <Bell className="h-5 w-5" />
-            <span className="absolute top-1 right-1 min-h-[18px] min-w-[18px] px-1 grid place-items-center rounded-full bg-[#BA1A1A] text-[11px] font-medium text-white">3</span>
+            <span className="absolute -top-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-[var(--md-sys-color-error)] ring-2 ring-[var(--md-sys-color-surface)]" />
           </button>
-          <div className="relative ml-1">
-            <button type="button" onClick={() => setOpen(!open)} className="flex items-center gap-2 rounded-full bg-[#F3EDF7] pl-1 pr-3 py-1 hover:bg-[#E8DEF8] transition-colors">
-              <Avatar className="h-8 w-8">
+
+          <div className="relative">
+            <button onClick={() => setOpen(!open)} className="flex items-center gap-3 h-10 rounded-full bg-[var(--md-sys-color-surface-container)] border border-[var(--md-sys-color-outline-variant)] pl-1 pr-3 hover:bg-[var(--md-sys-color-surface-container-high)]">
+              <Avatar className="h-8 w-8 rounded-full">
                 {user?.profile?.avatar_url && <AvatarImage src={user.profile.avatar_url} alt={displayName} />}
-                <AvatarFallback className="bg-[#6750A4] text-white text-xs">{getInitials(displayName)}</AvatarFallback>
+                <AvatarFallback className="rounded-full bg-[var(--md-sys-color-primary-container)] text-[var(--md-sys-color-on-primary-container)] text-xs font-medium">
+                  {getInitials(displayName)}
+                </AvatarFallback>
               </Avatar>
-              <span className="hidden sm:block text-sm font-medium text-[#1D1B20] max-w-[120px] truncate">{displayName}</span>
-              <ChevronDown className="h-4 w-4 text-[#49454F] hidden sm:block" />
+              <span className="hidden sm:block text-sm font-medium text-[var(--md-sys-color-on-surface)] max-w-[120px] truncate">{displayName}</span>
             </button>
             {open && (
               <>
                 <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-                <div className="absolute right-0 top-full z-50 mt-2 w-56 rounded-3xl bg-white shadow-xl border border-[#E7E0EC] py-2 overflow-hidden animate-in">
-                  <div className="px-4 py-3 bg-[#F3EDF7] mx-2 rounded-2xl mb-2">
-                    <p className="text-sm font-medium text-[#1D1B20]">{displayName}</p>
-                    <p className="text-xs text-[#49454F] truncate">{user?.email}</p>
+                <div className="absolute right-0 top-full mt-2 w-64 rounded-[16px] bg-[var(--md-sys-color-surface-container-low)] border border-[var(--md-sys-color-outline-variant)] shadow-[var(--md-elevation-2)] overflow-hidden z-50 p-2">
+                  <div className="rounded-[12px] bg-[var(--md-sys-color-surface-container)] p-3 mb-2">
+                    <p className="text-sm font-medium text-[var(--md-sys-color-on-surface)]">{displayName}</p>
+                    <p className="text-xs text-[var(--md-sys-color-on-surface-variant)] truncate">{user?.email}</p>
+                    <span className="inline-flex mt-2 rounded-full bg-[var(--md-sys-color-secondary-container)] text-[var(--md-sys-color-on-secondary-container)] px-2.5 py-1 text-[11px] font-medium capitalize">{user?.role}</span>
                   </div>
-                  <button onClick={() => { setOpen(false); router.push(`/${user?.role || "student"}/profile`); }} className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-[#1D1B20] hover:bg-[#F3EDF7]"><User className="h-4 w-4" /> My Profile</button>
-                  <button onClick={() => { setOpen(false); router.push(`/${user?.role || "student"}/settings`); }} className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-[#1D1B20] hover:bg-[#F3EDF7]"><Settings className="h-4 w-4" /> Settings</button>
-                  <div className="my-2 border-t border-[#E7E0EC]" />
-                  <button onClick={async () => { await supabase.auth.signOut(); router.push("/login"); router.refresh(); }} className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-[#BA1A1A] hover:bg-[#FFDAD6]"><LogOut className="h-4 w-4" /> Logout</button>
+                  <button onClick={() => { setOpen(false); router.push(`/${user?.role || 'student'}/profile`); }} className="w-full flex items-center gap-3 h-10 px-3 rounded-full hover:bg-[var(--md-sys-color-surface-container-high)] text-sm">
+                    <User className="h-4 w-4" /> Profile
+                  </button>
+                  <button onClick={() => { setOpen(false); router.push(`/${user?.role || 'student'}/settings`); }} className="w-full flex items-center gap-3 h-10 px-3 rounded-full hover:bg-[var(--md-sys-color-surface-container-high)] text-sm">
+                    <Settings className="h-4 w-4" /> Settings
+                  </button>
+                  <div className="my-2 border-t border-[var(--md-sys-color-outline-variant)]" />
+                  <button onClick={async () => { await supabase.auth.signOut(); router.push('/login'); }} className="w-full flex items-center gap-3 h-10 px-3 rounded-full hover:bg-[var(--md-sys-color-error-container)] text-[var(--md-sys-color-error)] text-sm">
+                    <LogOut className="h-4 w-4" /> Sign out
+                  </button>
                 </div>
               </>
             )}
