@@ -77,21 +77,36 @@ export default function LoginPage() {
       });
 
       if (error) {
-        toast.error(error.message);
+        // Provide helpful message for demo accounts
+        if (error.message.includes("Invalid login credentials")) {
+          toast.error("Invalid credentials. If using demo, the account may not exist yet — try registering first or contact admin.");
+        } else {
+          toast.error(error.message);
+        }
         return;
       }
 
-      if (data.role === "admin" && authData.user.email !== "admin@demo.com") {
-        toast.error("Invalid admin credentials");
-        await supabase.auth.signOut();
-        return;
+      // Fetch real role from public.users
+      const { data: userRow } = await supabase
+        .from("users")
+        .select("role")
+        .eq("id", authData.user.id)
+        .single();
+
+      const realRole = (userRow?.role as string) || authData.user.user_metadata?.role || data.role;
+
+      // If user selected a role that doesn't match their actual role, warn but still allow
+      if (data.role !== realRole) {
+        toast(`You are registered as ${realRole}, redirecting there.`, { duration: 3000 } as any);
       }
 
       toast.success("Welcome back!");
-      router.push("/dashboard");
+      if (realRole === "admin") router.push("/admin");
+      else if (realRole === "alumni") router.push("/alumni");
+      else router.push("/student");
       router.refresh();
-    } catch {
-      toast.error("An unexpected error occurred");
+    } catch (e: any) {
+      toast.error(e?.message || "An unexpected error occurred");
     } finally {
       setIsLoading(false);
     }

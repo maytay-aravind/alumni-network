@@ -1,59 +1,42 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f1f5f9;
-  --foreground: #1e293b;
+  --background: #fef7ff;
+  --foreground: #1d1b20;
   --card: #ffffff;
-  --card-foreground: #1e293b;
+  --card-foreground: #1d1b20;
   --popover: #ffffff;
-  --popover-foreground: #1e293b;
-  --primary: #3b82f6;
+  --popover-foreground: #1d1b20;
+  --primary: #6750a4;
   --primary-foreground: #ffffff;
-  --secondary: #f1f5f9;
-  --secondary-foreground: #475569;
-  --muted: #f1f5f9;
-  --muted-foreground: #64748b;
-  --accent: #f97316;
-  --accent-foreground: #ffffff;
-  --destructive: #ef4444;
+  --secondary: #e8def8;
+  --secondary-foreground: #1d192b;
+  --muted: #f3eff4;
+  --muted-foreground: #49454f;
+  --accent: #eaddff;
+  --accent-foreground: #21005d;
+  --destructive: #ba1a1a;
   --destructive-foreground: #ffffff;
-  --border: #e2e8f0;
-  --input: #e2e8f0;
-  --ring: #3b82f6;
-  --radius: 0.5rem;
-  --sidebar-bg: #1e293b;
-  --sidebar-text: #94a3b8;
-  --sidebar-active: #3b82f6;
-  --header-orange: #f97316;
-  --header-orange-dark: #ea580c;
-  --success: #22c55e;
+  --border: #e7e0ec;
+  --input: #e7e0ec;
+  --ring: #6750a4;
+  --radius: 1rem;
+  --sidebar-bg: #f3edf7;
+  --sidebar-text: #49454f;
+  --sidebar-active: #6750a4;
+  --sidebar-active-bg: #eaddff;
+  --header-bg: #ffffff;
+  --success: #386a20;
   --success-foreground: #ffffff;
-  --warning: #f59e0b;
+  --warning: #7c4d00;
   --warning-foreground: #ffffff;
-  --info: #3b82f6;
+  --info: #005ac1;
   --info-foreground: #ffffff;
-}
-
-.dark {
-  --background: #0a0a0a;
-  --foreground: #ededed;
-  --card: #0a0a0a;
-  --card-foreground: #ededed;
-  --popover: #0a0a0a;
-  --popover-foreground: #ededed;
-  --primary: #6366f1;
-  --primary-foreground: #ffffff;
-  --secondary: #1f2937;
-  --secondary-foreground: #f9fafb;
-  --muted: #1f2937;
-  --muted-foreground: #9ca3af;
-  --accent: #1f2937;
-  --accent-foreground: #f9fafb;
-  --destructive: #dc2626;
-  --destructive-foreground: #ffffff;
-  --border: #1f2937;
-  --input: #1f2937;
-  --ring: #6366f1;
+  --surface: #fef7ff;
+  --surface-container: #f3eff4;
+  --surface-container-high: #ece6f0;
+  --outline: #79747e;
+  --outline-variant: #cac4d0;
 }
 
 @theme inline {
@@ -76,18 +59,13 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 8px);
+  --radius-md: calc(var(--radius) - 4px);
   --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --radius-xl: calc(var(--radius) + 8px);
+  --radius-2xl: calc(var(--radius) + 12px);
+  --radius-3xl: calc(var(--radius) + 16px);
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
@@ -96,69 +74,35 @@ body {
   font-family: var(--font-sans);
 }
 
+/* Material You elevation + motion */
+.card-elevated {
+  background: var(--card);
+  border-radius: 24px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.05);
+}
+.card-outlined {
+  background: var(--card);
+  border: 1px solid var(--outline-variant);
+  border-radius: 16px;
+}
+.btn-pill {
+  border-radius: 9999px;
+}
+.m3-surface {
+  background: var(--surface-container);
+  border-radius: 28px;
+}
+
 @keyframes animate-in {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+  from { opacity: 0; transform: scale(0.96) translateY(4px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
 }
-
-@keyframes fade-in-0 {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes zoom-in-95 {
-  from {
-    transform: scale(0.95);
-  }
-  to {
-    transform: scale(1);
-  }
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
-}
-
-.animate-in {
-  animation: animate-in 0.2s ease-out;
-}
-
-.fade-in-0 {
-  animation: fade-in-0 0.2s ease-out;
-}
-
-.zoom-in-95 {
-  animation: zoom-in-95 0.2s ease-out;
-}
-
-.animate-spin {
-  animation: spin 1s linear infinite;
-}
-
-.animate-pulse {
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
+@keyframes fade-in-0 { from { opacity: 0; } to { opacity: 1; } }
+@keyframes zoom-in-95 { from { transform: scale(0.95); } to { transform: scale(1); } }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+.animate-in { animation: animate-in 0.3s cubic-bezier(0.2, 0, 0, 1); }
+.fade-in-0 { animation: fade-in-0 0.2s ease-out; }
+.zoom-in-95 { animation: zoom-in-95 0.2s ease-out; }
+.animate-spin { animation: spin 1s linear infinite; }
+.animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
