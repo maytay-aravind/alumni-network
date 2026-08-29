@@ -10,9 +10,11 @@ import { Calendar, ArrowRight, Users } from 'lucide-react';
 interface Event {
   id: string;
   title: string;
-  date: string;
+  date?: string;
+  event_date?: string;
+  event_time?: string;
   event_type: string;
-  registration_count: number;
+  registration_count?: number;
   max_participants: number | null;
 }
 
@@ -45,42 +47,47 @@ export function UpcomingEventsCard({ events }: UpcomingEventsCardProps) {
           </div>
         ) : (
           <div className="space-y-3">
-            {events.map((event) => (
-              <div
-                key={event.id}
-                className="flex items-start gap-4 p-3 rounded-lg border hover:bg-muted/50 transition-colors"
-              >
-                <div className="flex flex-col items-center justify-center min-w-[48px] h-14 rounded-lg bg-primary/10 text-primary">
-                  <span className="text-xs font-medium">
-                    {new Date(event.date).toLocaleDateString('en-US', { month: 'short' })}
-                  </span>
-                  <span className="text-lg font-bold leading-none">
-                    {new Date(event.date).getDate()}
-                  </span>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <p className="font-medium truncate">{event.title}</p>
-                    <Badge variant={getEventTypeBadgeVariant(event.event_type)} className="text-[10px]">
-                      {event.event_type}
-                    </Badge>
-                  </div>
-                  <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                    <span>{formatDate(event.date)}</span>
-                    <span className="flex items-center gap-1">
-                      <Users className="h-3 w-3" />
-                      {event.registration_count}
-                      {event.max_participants && `/${event.max_participants}`}
+            {events.map((event) => {
+              const rawDate = (event as any).event_date || event.date;
+              const d = rawDate ? new Date(rawDate) : null;
+              const isValid = d && !isNaN(d.getTime());
+              return (
+                <div
+                  key={event.id}
+                  className="flex items-start gap-4 p-3 rounded-lg border hover:bg-muted/50 transition-colors"
+                >
+                  <div className="flex flex-col items-center justify-center min-w-[48px] h-14 rounded-lg bg-primary/10 text-primary">
+                    <span className="text-xs font-medium">
+                      {isValid ? d!.toLocaleDateString('en-US', { month: 'short' }) : '—'}
+                    </span>
+                    <span className="text-lg font-bold leading-none">
+                      {isValid ? d!.getDate() : '—'}
                     </span>
                   </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <p className="font-medium truncate">{event.title}</p>
+                      <Badge variant={getEventTypeBadgeVariant(event.event_type)} className="text-[10px]">
+                        {event.event_type}
+                      </Badge>
+                    </div>
+                    <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                      <span>{formatDate(rawDate)}</span>
+                      <span className="flex items-center gap-1">
+                        <Users className="h-3 w-3" />
+                        {event.registration_count ?? 0}
+                        {event.max_participants ? `/${event.max_participants}` : ''}
+                      </span>
+                    </div>
+                  </div>
+                  <Link href={`/student/events?register=${event.id}`}>
+                    <Button size="sm" variant="outline">
+                      Register
+                    </Button>
+                  </Link>
                 </div>
-                <Link href={`/student/events?register=${event.id}`}>
-                  <Button size="sm" variant="outline">
-                    Register
-                  </Button>
-                </Link>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </CardContent>
