@@ -85,13 +85,8 @@ export default function LoginPage() {
         return;
       }
 
-      const { data: userRow } = await supabase
-        .from("users")
-        .select("role")
-        .eq("id", authData.user.id)
-        .single();
-
-      const realRole = (userRow?.role as string) || authData.user.user_metadata?.role || data.role;
+      // Use role from JWT metadata (avoids RLS recursion on users table)
+      const realRole = (authData.user.user_metadata?.role as string) || data.role;
 
       if (data.role !== realRole) {
         toast(`You are registered as ${realRole}, redirecting there.`, { duration: 3000 } as any);
