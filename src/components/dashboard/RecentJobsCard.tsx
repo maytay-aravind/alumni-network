@@ -13,8 +13,10 @@ interface Job {
   company: string;
   location: string;
   job_type: string;
-  skills_required: string[];
-  application_deadline: string;
+  skills?: string[] | string;
+  skills_required?: string[] | string;
+  application_deadline?: string;
+  deadline?: string;
 }
 
 interface RecentJobsCardProps {
@@ -68,16 +70,24 @@ export function RecentJobsCard({ jobs }: RecentJobsCardProps) {
                   </div>
                 </div>
                 <div className="flex flex-wrap gap-1 mt-2">
-                  {job.skills_required.slice(0, 3).map((skill) => (
-                    <Badge key={skill} variant="secondary" className="text-[10px]">
-                      {skill}
-                    </Badge>
-                  ))}
-                  {job.skills_required.length > 3 && (
-                    <Badge variant="secondary" className="text-[10px]">
-                      +{job.skills_required.length - 3}
-                    </Badge>
-                  )}
+                  {(() => {
+                    const raw = (job as any).skills ?? (job as any).skills_required ?? [];
+                    const list: string[] = Array.isArray(raw) ? raw : typeof raw === 'string' ? (() => { try { const p = JSON.parse(raw); return Array.isArray(p) ? p : []; } catch { return []; } })() : [];
+                    return (
+                      <>
+                        {list.slice(0, 3).map((skill) => (
+                          <Badge key={skill} variant="secondary" className="text-[10px]">
+                            {skill}
+                          </Badge>
+                        ))}
+                        {list.length > 3 && (
+                          <Badge variant="secondary" className="text-[10px]">
+                            +{list.length - 3}
+                          </Badge>
+                        )}
+                      </>
+                    );
+                  })()}
                 </div>
               </Link>
             ))}
