@@ -1,77 +1,105 @@
 @echo off
-setlocal
+setlocal EnableDelayedExpansion
+title Alumni Network System
 cd /d "%~dp0"
 echo ========================================
 echo  Alumni Network System
+echo  Folder: %CD%
 echo ========================================
 echo.
 
-REM Check Node.js
+REM Keep window open on any error
+if "%1"=="--no-pause" goto :skipPauseTrap
+if not "%~0"=="%~dp0run.bat" (
+  echo [INFO] Running from Explorer - window will stay open
+  echo.
+)
+:skipPauseTrap
+
+echo [1/4] Checking Node.js...
 where node >nul 2>nul
-if %ERRORLEVEL% neq 0 (
-    echo [ERROR] Node.js not found. Install from https://nodejs.org
+if !ERRORLEVEL! neq 0 (
+    echo [ERROR] Node.js NOT found!
+    echo Install Node.js from https://nodejs.org (LTS version)
+    echo After install, close this window and double-click run.bat again
+    echo.
     pause
     exit /b 1
 )
-echo [OK] Node %~nx0
-node --version
+for /f "tokens=*" %%v in ('node --version 2^>nul') do set NODE_VER=%%v
+echo [OK] Node !NODE_VER! found
+where npm >nul 2>nul
+if !ERRORLEVEL! neq 0 (
+    echo [ERROR] npm NOT found (comes with Node.js)
+    echo Reinstall Node.js from https://nodejs.org
+    pause
+    exit /b 1
+)
+echo [OK] npm found
 echo.
 
-REM Check .env.local
+echo [2/4] Checking .env.local...
 if not exist ".env.local" (
-    echo [ERROR] .env.local not found.
-    echo Copy .env.example to .env.local and fill in your keys.
+    echo [ERROR] .env.local NOT found in %CD%
+    echo.
+    echo Fix: copy .env.example to .env.local and add your keys
     echo   copy .env.example .env.local
+    echo Then edit .env.local with your Supabase and Gemini keys
+    echo.
+    if exist ".env.example" (
+        echo [INFO] Found .env.example - you can copy it now
+    )
     pause
     exit /b 1
 )
 echo [OK] .env.local found
 echo.
 
-REM Check if port 3000 already in use
-netstat -ano | findstr :3000 >nul 2>nul
-if %ERRORLEVEL% equ 0 (
-    echo [WARN] Port 3000 already in use - server may already be running
-    echo [INFO] Check http://localhost:3000 in your browser
-    echo [INFO] Or close the other terminal and try again
-    echo.
-)
-
-REM Install deps if needed
+echo [3/4] Checking dependencies...
 if not exist "node_modules" (
-    echo [INFO] Installing dependencies (first run, please wait)...
+    echo [INFO] node_modules missing - installing (this takes 1-2 minutes)...
+    echo.
     call npm install
-    if %ERRORLEVEL% neq 0 (
-        echo [ERROR] npm install failed.
+    if !ERRORLEVEL! equ 0 (
+        echo.
+        echo [ERROR] npm install failed - see errors above
+        echo Try: delete node_modules folder and run again
         pause
         exit /b 1
     )
+    echo.
     echo [OK] Dependencies installed
-    echo.
 ) else (
-    echo [OK] Dependencies ready
-    echo.
+    echo [OK] node_modules ready
 )
+echo.
 
+echo [4/4] Starting dev server...
 echo ========================================
-echo  Starting dev server...
 echo  URL: http://localhost:3000
-echo  Press Ctrl+C to stop
+echo  Keep this window OPEN while using the site
+echo  Press Ctrl+C to stop the server
 echo ========================================
 echo.
-echo [INFO] Compiling... (wait for "Ready" message)
+echo [INFO] If port 3000 is busy, you will see EADDRINUSE error below
+echo [INFO] Waiting for Next.js to show "Ready" - then open browser
 echo.
+timeout /t 2 >nul
 
 call npm run dev
 
-REM If we reach here, server stopped
+REM Server stopped - keep window open
 echo.
 echo ========================================
-if %ERRORLEVEL% equ 0 (
-    echo  Server stopped cleanly
+echo  Server has stopped
+if !ERRORLEVEL! equ 0 (
+    echo  It stopped cleanly (you pressed Ctrl+C)
 ) else (
-    echo  Server stopped with error code %ERRORLEVEL%
-    echo  Check the messages above for details
+    echo  Exit code: !ERRORLEVEL!
+    echo  Look for errors above (e.g., port in use, missing env)
 )
 echo ========================================
-pause
+echo.
+echo Window will stay open - press any key to close
+pause >nul
+endlocal
