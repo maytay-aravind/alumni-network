@@ -3,103 +3,122 @@ setlocal EnableDelayedExpansion
 title Alumni Network System
 cd /d "%~dp0"
 echo ========================================
-echo  Alumni Network System
+echo  Alumni Network System - Local Run
 echo  Folder: %CD%
 echo ========================================
 echo.
 
-REM Keep window open on any error
-if "%1"=="--no-pause" goto :skipPauseTrap
-if not "%~0"=="%~dp0run.bat" (
-  echo [INFO] Running from Explorer - window will stay open
-  echo.
-)
-:skipPauseTrap
-
-echo [1/4] Checking Node.js...
+echo [1/5] Checking Node.js...
 where node >nul 2>nul
 if !ERRORLEVEL! neq 0 (
-    echo [ERROR] Node.js NOT found!
-    echo Install Node.js from https://nodejs.org (LTS version)
-    echo After install, close this window and double-click run.bat again
-    echo.
+    echo [ERROR] Node.js NOT found! Install LTS from https://nodejs.org
     pause
     exit /b 1
 )
 for /f "tokens=*" %%v in ('node --version 2^>nul') do set NODE_VER=%%v
-echo [OK] Node !NODE_VER! found
+echo [OK] Node !NODE_VER!
 where npm >nul 2>nul
 if !ERRORLEVEL! neq 0 (
-    echo [ERROR] npm NOT found (comes with Node.js)
-    echo Reinstall Node.js from https://nodejs.org
+    echo [ERROR] npm NOT found - reinstall Node.js
     pause
     exit /b 1
 )
 echo [OK] npm found
 echo.
 
-echo [2/4] Checking .env.local...
+echo [2/5] Checking env files...
 if not exist ".env.local" (
     echo [ERROR] .env.local NOT found in %CD%
-    echo.
-    echo Fix: copy .env.example to .env.local and add your keys
+    echo Fix: copy .env.example to .env.local and fill Supabase + Gemini keys
     echo   copy .env.example .env.local
-    echo Then edit .env.local with your Supabase and Gemini keys
-    echo.
-    if exist ".env.example" (
-        echo [INFO] Found .env.example - you can copy it now
-    )
     pause
     exit /b 1
 )
-echo [OK] .env.local found
+echo [OK] .env.local found (frontend)
+
+REM Ensure backend .env exists - copy from root .env.local if missing
+if not exist "backend\.env" (
+    echo [INFO] backend\.env missing - creating from .env.local...
+    if not exist "backend" mkdir backend >nul 2>nul
+    (
+        echo PORT=4000
+        echo FRONTEND_URL=http://localhost:3000
+        for /f "usebackq tokens=*" %%a in (".env.local") do (
+            echo %%a
+        )
+    ) > "backend\.env"
+    echo [OK] backend\.env created
+) else (
+    echo [OK] backend\.env found
+)
 echo.
 
-echo [3/4] Checking dependencies...
+echo [3/5] Installing dependencies...
 if not exist "node_modules" (
-    echo [INFO] node_modules missing - installing (this takes 1-2 minutes)...
-    echo.
+    echo [INFO] Installing frontend deps (1-2 min)...
     call npm install
-    if !ERRORLEVEL! equ 0 (
-        echo.
-        echo [ERROR] npm install failed - see errors above
-        echo Try: delete node_modules folder and run again
+    if !ERRORLEVEL! neq 0 (
+        echo [ERROR] Frontend npm install failed
         pause
         exit /b 1
     )
-    echo.
-    echo [OK] Dependencies installed
+    echo [OK] Frontend deps ready
 ) else (
-    echo [OK] node_modules ready
+    echo [OK] Frontend deps ready
+)
+
+if exist "backend\package.json" (
+    if not exist "backend\node_modules" (
+        echo [INFO] Installing backend deps...
+        pushd backend
+        call npm install
+        if !ERRORLEVEL! neq 0 (
+            echo [ERROR] Backend npm install failed
+            popd
+            pause
+            exit /b 1
+        )
+        popd
+        echo [OK] Backend deps ready
+    ) else (
+        echo [OK] Backend deps ready
+    )
+) else (
+    echo [INFO] No backend/package.json - skipping backend install
 )
 echo.
 
-echo [4/4] Starting dev server...
+echo [4/5] Starting servers...
+echo [INFO] Backend will run at http://localhost:4000
+echo [INFO] Frontend will run at http://localhost:3000
+echo.
+
+REM Start backend in new window if it exists
+if exist "backend\server.js" (
+    echo [INFO] Launching backend in new window...
+    start "Alumni Backend - http://localhost:4000" cmd /k "cd /d "%~dp0backend" && echo Backend starting... && npm run dev"
+    timeout /t 3 >nul
+    echo [OK] Backend window opened
+) else (
+    echo [INFO] No backend/server.js - running frontend only
+)
+echo.
+
+echo [5/5] Starting frontend...
 echo ========================================
-echo  URL: http://localhost:3000
-echo  Keep this window OPEN while using the site
-echo  Press Ctrl+C to stop the server
+echo  Frontend: http://localhost:3000
+echo  Backend:  http://localhost:4000 (separate window)
+echo  Keep BOTH windows open while using the site
+echo  Press Ctrl+C here to stop frontend
 echo ========================================
 echo.
-echo [INFO] If port 3000 is busy, you will see EADDRINUSE error below
-echo [INFO] Waiting for Next.js to show "Ready" - then open browser
-echo.
-timeout /t 2 >nul
 
 call npm run dev
 
-REM Server stopped - keep window open
 echo.
 echo ========================================
-echo  Server has stopped
-if !ERRORLEVEL! equ 0 (
-    echo  It stopped cleanly (you pressed Ctrl+C)
-) else (
-    echo  Exit code: !ERRORLEVEL!
-    echo  Look for errors above (e.g., port in use, missing env)
-)
+echo  Frontend stopped (code !ERRORLEVEL!)
+echo  Backend window is still open - close it manually if needed
 echo ========================================
-echo.
-echo Window will stay open - press any key to close
-pause >nul
+pause
 endlocal
