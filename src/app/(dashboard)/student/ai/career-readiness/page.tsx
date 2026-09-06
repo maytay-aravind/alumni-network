@@ -86,9 +86,22 @@ export default function CareerReadinessPage() {
         }),
       });
       const data = await res.json();
+      if (!res.ok) {
+        // Show error and don't set invalid result
+        console.error("Assess failed", data);
+        alert(data.error || "Failed to assess. Please try again.");
+        return;
+      }
+      // Validate shape
+      if (!data || typeof data.overall_score !== 'number' || !data.categories || typeof data.categories !== 'object') {
+        console.error("Invalid result shape", data);
+        alert("Invalid response from AI. Please try again.");
+        return;
+      }
       setResult(data);
-    } catch {
-      // Error handled by UI state
+    } catch (e) {
+      console.error(e);
+      alert("Network error. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -108,20 +121,20 @@ export default function CareerReadinessPage() {
   };
 
   const getRadarData = () => {
-    if (!result) return [];
-    return Object.entries(result.categories).map(([key, val]) => ({
+    if (!result?.categories || typeof result.categories !== 'object') return [];
+    return Object.entries(result.categories).map(([key, val]: any) => ({
       category: CATEGORY_LABELS[key] || key,
-      score: val.score,
+      score: val?.score ?? 0,
       fullMark: 100,
     }));
   };
 
   const getBarData = () => {
-    if (!result) return [];
-    return Object.entries(result.categories).map(([key, val]) => ({
+    if (!result?.categories || typeof result.categories !== 'object') return [];
+    return Object.entries(result.categories).map(([key, val]: any) => ({
       name: CATEGORY_LABELS[key] || key,
-      score: val.score,
-      fill: getScoreColor(val.score),
+      score: val?.score ?? 0,
+      fill: getScoreColor(val?.score ?? 0),
     }));
   };
 
@@ -223,6 +236,14 @@ export default function CareerReadinessPage() {
             </div>
           </CardContent>
         </Card>
+      ) : !result?.categories || typeof result.categories !== 'object' ? (
+        <Card>
+          <CardContent className="p-8 text-center">
+            <p className="font-medium">Could not load assessment.</p>
+            <p className="text-sm text-muted-foreground mt-1">The AI response was invalid. Please try again.</p>
+            <Button variant="outline" className="mt-4" onClick={() => setResult(null)}>Try Again</Button>
+          </CardContent>
+        </Card>
       ) : (
         <div className="space-y-6">
           <Card className="overflow-hidden">
@@ -248,14 +269,14 @@ export default function CareerReadinessPage() {
                       strokeDasharray={2 * Math.PI * 54}
                       strokeDashoffset={
                         2 * Math.PI * 54 -
-                        (result.overall_score / 100) * 2 * Math.PI * 54
+                        ((result.overall_score ?? 0) / 100) * 2 * Math.PI * 54
                       }
                       strokeLinecap="round"
                     />
                   </svg>
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
                     <span className="text-4xl font-bold text-white">
-                      {result.overall_score}
+                      {result.overall_score ?? 0}
                     </span>
                     <span className="text-sm text-white/80">/ 100</span>
                   </div>
@@ -263,10 +284,10 @@ export default function CareerReadinessPage() {
                 <div className="text-center text-white sm:text-left">
                   <h2 className="text-2xl font-bold">Career Readiness Score</h2>
                   <p className="mt-1 text-lg">
-                    {getScoreLabel(result.overall_score)}
+                    {getScoreLabel(result.overall_score ?? 0)}
                   </p>
                   <p className="mt-2 max-w-md text-sm text-white/80">
-                    {result.summary}
+                    {result.summary || 'Assessment complete.'}
                   </p>
                 </div>
               </div>
@@ -323,7 +344,7 @@ export default function CareerReadinessPage() {
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {Object.entries(result.categories).map(([key, val]) => (
+            {Object.entries(result.categories || {}).map(([key, val]: any) => (
               <Card key={key}>
                 <CardContent className="p-4">
                   <div className="mb-2 flex items-center justify-between">
@@ -333,23 +354,23 @@ export default function CareerReadinessPage() {
                     </span>
                     <span
                       className="text-lg font-bold"
-                      style={{ color: getScoreColor(val.score) }}
+                      style={{ color: getScoreColor(val?.score ?? 0) }}
                     >
-                      {val.score}
+                      {val?.score ?? 0}
                     </span>
                   </div>
                   <div className="mb-3 h-2 w-full overflow-hidden rounded-full bg-muted">
                     <div
                       className="h-full rounded-full transition-all duration-500"
                       style={{
-                        width: `${val.score}%`,
-                        backgroundColor: getScoreColor(val.score),
+                        width: `${val?.score ?? 0}%`,
+                        backgroundColor: getScoreColor(val?.score ?? 0),
                       }}
                     />
                   </div>
-                  <p className="text-xs text-muted-foreground">{val.feedback}</p>
+                  <p className="text-xs text-muted-foreground">{val?.feedback || ''}</p>
                   <div className="mt-2 space-y-1">
-                    {Object.entries(val.breakdown).map(([bk, bv]) => (
+                    {Object.entries(val?.breakdown || {}).map(([bk, bv]: any) => (
                       <div key={bk} className="flex items-center justify-between text-xs">
                         <span className="text-muted-foreground">
                           {bk.replace(/_/g, " ")}
@@ -373,7 +394,7 @@ export default function CareerReadinessPage() {
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2">
-                  {result.strengths.map((s, i) => (
+                  {(result.strengths || []).map((s: string, i: number) => (
                     <li key={i} className="flex items-start gap-2 text-sm">
                       <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />
                       {s}
@@ -392,7 +413,7 @@ export default function CareerReadinessPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {result.improvement_areas.map((area, i) => (
+                  {(result.improvement_areas || []).map((area: any, i: number) => (
                     <div key={i}>
                       <div className="mb-1 flex items-center gap-2">
                         <h4 className="text-sm font-medium">{area.area}</h4>
@@ -409,7 +430,7 @@ export default function CareerReadinessPage() {
                         </span>
                       </div>
                       <ul className="ml-4 space-y-1">
-                        {area.action_items.map((item, ai) => (
+                        {(area.action_items || []).map((item: string, ai: number) => (
                           <li
                             key={ai}
                             className="flex items-start gap-1 text-xs text-muted-foreground"
