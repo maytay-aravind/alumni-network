@@ -47,6 +47,19 @@ if not exist "backend\.env" (
 ) else (
     echo [OK] backend\.env found
 )
+
+if not exist "data\alumni.db" (
+    echo [INFO] Local DB not found - creating data\alumni.db...
+    if not exist "data" mkdir data
+    call node scripts\seed-local-db.js
+    if errorlevel 1 (
+        echo [WARN] Local DB seed had issues - continuing
+    ) else (
+        echo [OK] Local DB ready at data\alumni.db
+    )
+) else (
+    echo [OK] Local DB found at data\alumni.db
+)
 echo.
 
 echo [3/5] Installing frontend dependencies...

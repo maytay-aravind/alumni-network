@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+/backend/node_modules
 /.pnp
 .pnp.*
 .yarn/*
@@ -36,6 +37,11 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+# local db journal (keep data/alumni.db, ignore wal/shm)
+data/*.db-shm
+data/*.db-wal
+data/*.db-journal
 
 # typescript
 *.tsbuildinfo
