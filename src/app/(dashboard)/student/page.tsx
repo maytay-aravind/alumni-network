@@ -90,26 +90,26 @@ export default function StudentDashboard() {
 
   return (
     <div className="space-y-6">
-      {/* Card 1: Welcome + Guidance - colorful primary-container */}
-      <Card variant="filled" className="rounded-[28px] bg-[var(--md-sys-color-primary-container)] border-[var(--md-sys-color-primary)]/20 overflow-hidden">
-        <CardContent className="p-6 lg:p-7">
+      {/* Card 1: Welcome - vibrant primary, not muted */}
+      <div className="rounded-[28px] bg-[var(--md-sys-color-primary)] border border-[var(--md-sys-color-primary)] overflow-hidden shadow-[var(--md-elevation-2)]">
+        <div className="p-6 lg:p-7">
           <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6">
             <div className="flex-1">
-              <div className="inline-flex items-center gap-2 rounded-full bg-[var(--md-sys-color-surface-container-low)] border border-[var(--md-sys-color-outline-variant)] px-3 py-1.5 text-xs font-medium text-[var(--md-sys-color-on-surface-variant)]">
-                <Sparkles className="h-3.5 w-3.5 text-[var(--md-sys-color-primary)]" /> Welcome back
+              <div className="inline-flex items-center gap-2 rounded-full bg-white/15 border border-white/20 px-3 py-1.5 text-xs font-medium text-white">
+                <Sparkles className="h-3.5 w-3.5" /> Welcome back
               </div>
-              <h1 className="mt-3 text-[28px] font-normal leading-9 text-[var(--md-sys-color-on-primary-container)]">
-                Hey {userMeta.first_name}! <span className="font-medium">Let's move forward.</span>
+              <h1 className="mt-3 text-[28px] font-medium leading-9 text-white">
+                Hey {userMeta.first_name}! Let's move forward.
               </h1>
-              <p className="mt-2 text-sm leading-5 text-[var(--md-sys-color-on-primary-container)]/80 max-w-[60ch]">
+              <p className="mt-2 text-sm leading-5 text-white/80 max-w-[60ch]">
                 Your network is active. 2 mentors suggested, 1 event this week. Start with your profile to get better matches.
               </p>
               <div className="mt-4 flex flex-wrap gap-2">
-                <Link href="/student/profile"><Button size="sm" className="rounded-full">Complete profile <ArrowRight className="ml-1 h-4 w-4" /></Button></Link>
-                <Link href="/student/alumni"><Button variant="tonal" size="sm"><Users className="mr-1 h-4 w-4" /> Find alumni</Button></Link>
+                <Link href="/student/profile"><span className="inline-flex h-9 px-5 items-center justify-center rounded-full bg-white text-[var(--md-sys-color-primary)] text-sm font-medium hover:bg-white/90">Complete profile <ArrowRight className="ml-1 h-4 w-4" /></span></Link>
+                <Link href="/student/alumni"><span className="inline-flex h-9 px-5 items-center justify-center rounded-full bg-white/15 text-white border border-white/20 text-sm font-medium hover:bg-white/20"><Users className="mr-1 h-4 w-4" /> Find alumni</span></Link>
               </div>
             </div>
-            <div className="lg:w-[320px] rounded-[20px] bg-[var(--md-sys-color-surface-container-low)] border border-[var(--md-sys-color-outline-variant)] p-4">
+            <div className="lg:w-[320px] rounded-[20px] bg-white border border-white/20 p-4 shadow-[var(--md-elevation-1)]">
               <p className="text-xs font-medium tracking-widest uppercase text-[var(--md-sys-color-on-surface-variant)]">Live activity</p>
               <div className="mt-3 space-y-2.5">
                 {activities.slice(0, 3).map((a, i) => (
@@ -125,99 +125,96 @@ export default function StudentDashboard() {
               <Link href="/student/posts" className="mt-3 inline-flex text-xs font-medium text-[var(--md-sys-color-primary)] hover:underline">View community →</Link>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
-      {/* Card 2,3,4: 3-column grid - max 4 cards total, colorful but guided */}
+      {/* 3 cards: Career (tertiary), Opportunities (secondary), Quick start (vibrant) */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Career Readiness - colorful progress */}
-        <Card variant="elevated" className="rounded-[28px] border-[var(--md-sys-color-tertiary)]/20">
+        <Card variant="elevated" className="rounded-[28px] border-2 border-[#FFD9E3] bg-[#FFF8F8]">
           <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-[16px]"><TrendingUp className="h-5 w-5 text-[var(--md-sys-color-tertiary)]" /> Career readiness</CardTitle>
+            <CardTitle className="flex items-center gap-2 text-[16px]"><TrendingUp className="h-5 w-5 text-[#8B4A61]" /> Career readiness</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-baseline gap-3">
-              <span className="text-[40px] font-normal leading-none text-[var(--md-sys-color-primary)]">{score.overall}</span>
+              <span className="text-[44px] font-medium leading-none text-[#8B4A61]">{score.overall}</span>
               <span className="text-sm text-[var(--md-sys-color-on-surface-variant)]">/ 100</span>
-              <Badge className="ml-auto rounded-full bg-[var(--md-sys-color-tertiary-container)] text-[var(--md-sys-color-on-tertiary-container)] border-0">{score.overall >= 70 ? 'On track' : 'Getting started'}</Badge>
+              <Badge className="ml-auto rounded-full bg-[#FFD9E3] text-[#3A071E] border-0">{score.overall >= 70 ? 'On track' : 'Getting started'}</Badge>
             </div>
-            <div className="h-2 rounded-full bg-[var(--md-sys-color-surface-container-high)] overflow-hidden">
-              <div className="h-full bg-[var(--md-sys-color-primary)] rounded-full transition-all" style={{ width: `${score.overall}%` }} />
+            <div className="h-2.5 rounded-full bg-[#FFD9E3] overflow-hidden">
+              <div className="h-full bg-[#8B4A61] rounded-full" style={{ width: `${score.overall}%` }} />
             </div>
             <div className="grid grid-cols-2 gap-2 text-xs">
-              <div className="rounded-[12px] bg-[var(--md-sys-color-surface-container)] p-2.5 border border-[var(--md-sys-color-outline-variant)]">
-                <p className="font-medium text-[var(--md-sys-color-on-surface)]">Skills {Math.round(score.skills)}%</p>
-                <p className="text-[var(--md-sys-color-on-surface-variant)]">Add 2 more skills</p>
+              <div className="rounded-[12px] bg-white border border-[#FFD9E3] p-2.5">
+                <p className="font-medium text-[#8B4A61]">Skills {Math.round(score.skills)}%</p>
+                <p className="text-[var(--md-sys-color-on-surface-variant)]">Add 2 more</p>
               </div>
-              <div className="rounded-[12px] bg-[var(--md-sys-color-surface-container)] p-2.5 border border-[var(--md-sys-color-outline-variant)]">
-                <p className="font-medium">Projects {Math.round(score.projects)}%</p>
-                <p className="text-[var(--md-sys-color-on-surface-variant)]">1 project needed</p>
+              <div className="rounded-[12px] bg-white border border-[#FFD9E3] p-2.5">
+                <p className="font-medium text-[#8B4A61]">Projects {Math.round(score.projects)}%</p>
+                <p className="text-[var(--md-sys-color-on-surface-variant)]">1 needed</p>
               </div>
             </div>
-            <Link href="/student/ai/career-readiness"><Button variant="tonal" size="sm" className="w-full rounded-full"><Target className="mr-2 h-4 w-4" /> Improve score</Button></Link>
+            <Link href="/student/ai/career-readiness"><Button size="sm" className="w-full rounded-full bg-[#8B4A61] hover:bg-[#6B2F45]">Improve score <Target className="ml-2 h-4 w-4" /></Button></Link>
           </CardContent>
         </Card>
 
-        {/* Opportunities - jobs + events combined, secondary color */}
-        <Card variant="elevated" className="rounded-[28px]">
+        <Card variant="elevated" className="rounded-[28px] border-2 border-[#9EF1E6]">
           <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-[16px]"><Briefcase className="h-5 w-5 text-[var(--md-sys-color-secondary)]" /> Opportunities</CardTitle>
+            <CardTitle className="flex items-center gap-2 text-[16px]"><Briefcase className="h-5 w-5 text-[#006A60]" /> Opportunities</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             {jobs.length === 0 ? (
-              <div className="rounded-[16px] bg-[var(--md-sys-color-surface-container)] p-4 text-center">
-                <Briefcase className="h-8 w-8 mx-auto text-[var(--md-sys-color-on-surface-variant)]" />
-                <p className="text-sm mt-2 text-[var(--md-sys-color-on-surface-variant)]">No jobs yet</p>
+              <div className="rounded-[16px] bg-[#E6FFF9] border border-[#9EF1E6] p-4 text-center">
+                <Briefcase className="h-8 w-8 mx-auto text-[#006A60]" />
+                <p className="text-sm mt-2 text-[#006A60]">No jobs yet</p>
               </div>
             ) : jobs.slice(0, 2).map((job: any) => (
-              <div key={job.id} className="rounded-[16px] bg-[var(--md-sys-color-surface-container)] border border-[var(--md-sys-color-outline-variant)] p-3">
-                <p className="text-sm font-medium text-[var(--md-sys-color-on-surface)] truncate">{job.title}</p>
-                <p className="text-xs text-[var(--md-sys-color-on-surface-variant)]">{job.company} • {job.location}</p>
+              <div key={job.id} className="rounded-[16px] bg-white border border-[#9EF1E6] p-3">
+                <p className="text-sm font-medium text-[#00201C] truncate">{job.title}</p>
+                <p className="text-xs text-[#006A60]">{job.company} • {job.location}</p>
                 <div className="mt-2 flex flex-wrap gap-1">
                   {(Array.isArray(job.skills) ? job.skills : []).slice(0, 2).map((s: string) => (
-                    <Badge key={s} className="rounded-full bg-[var(--md-sys-color-secondary-container)] text-[var(--md-sys-color-on-secondary-container)] border-0 text-[10px]">{s}</Badge>
+                    <Badge key={s} className="rounded-full bg-[#9EF1E6] text-[#00201C] border-0 text-[10px]">{s}</Badge>
                   ))}
                 </div>
               </div>
             ))}
             {events.slice(0, 1).map((ev: any) => (
-              <div key={ev.id} className="rounded-[16px] bg-[var(--md-sys-color-tertiary-container)]/50 border border-[var(--md-sys-color-outline-variant)] p-3 flex items-center gap-3">
-                <span className="h-9 w-9 rounded-full bg-[var(--md-sys-color-tertiary-container)] grid place-items-center"><Calendar className="h-4 w-4 text-[var(--md-sys-color-on-tertiary-container)]" /></span>
+              <div key={ev.id} className="rounded-[16px] bg-[#006A60] border border-[#006A60] p-3 flex items-center gap-3">
+                <span className="h-9 w-9 rounded-full bg-white grid place-items-center"><Calendar className="h-4 w-4 text-[#006A60]" /></span>
                 <div className="min-w-0">
-                  <p className="text-sm font-medium truncate">{ev.title}</p>
-                  <p className="text-xs text-[var(--md-sys-color-on-surface-variant)]">{ev.event_date ? formatDate(ev.event_date) : 'TBD'} • {ev.venue}</p>
+                  <p className="text-sm font-medium text-white truncate">{ev.title}</p>
+                  <p className="text-xs text-white/80">{ev.event_date ? formatDate(ev.event_date) : 'TBD'} • {ev.venue}</p>
                 </div>
               </div>
             ))}
             <div className="flex gap-2">
-              <Link href="/student/jobs" className="flex-1"><Button variant="outlined" size="sm" className="w-full rounded-full">Jobs</Button></Link>
-              <Link href="/student/events" className="flex-1"><Button variant="outlined" size="sm" className="w-full rounded-full">Events</Button></Link>
+              <Link href="/student/jobs" className="flex-1"><span className="flex h-9 w-full items-center justify-center rounded-full bg-[#006A60] text-white text-sm font-medium">Jobs</span></Link>
+              <Link href="/student/events" className="flex-1"><span className="flex h-9 w-full items-center justify-center rounded-full border border-[#006A60] text-[#006A60] text-sm font-medium bg-white">Events</span></Link>
             </div>
           </CardContent>
         </Card>
 
-        {/* Quick start - guide new user, most colorful */}
-        <Card variant="elevated" className="rounded-[28px] bg-[var(--md-sys-color-surface-container-low)]">
+        <Card variant="elevated" className="rounded-[28px] border-2 border-[#E6DDFF] bg-[#F6F0FF]">
           <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-[16px]"><Award className="h-5 w-5 text-[#7A4E9E]" /> Quick start</CardTitle>
+            <CardTitle className="flex items-center gap-2 text-[16px]"><Award className="h-5 w-5 text-[#5B4DBC]" /> Quick start</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2.5">
-            <Link href="/student/alumni" className="flex items-center gap-3 rounded-[16px] bg-[#E8DEF8] border border-[var(--md-sys-color-outline-variant)] p-3 hover:bg-[#E0D4F5]">
-              <span className="h-9 w-9 rounded-full bg-[var(--md-sys-color-primary)] grid place-items-center"><Users className="h-4 w-4 text-white" /></span>
-              <div><p className="text-sm font-medium">Find a mentor</p><p className="text-xs text-[var(--md-sys-color-on-surface-variant)]">3 suggested for you</p></div>
-              <ArrowRight className="h-4 w-4 ml-auto text-[var(--md-sys-color-on-surface-variant)]" />
+            <Link href="/student/alumni" className="flex items-center gap-3 rounded-[16px] bg-[#5B4DBC] border border-[#5B4DBC] p-3 hover:bg-[#4A3AA8] text-white">
+              <span className="h-9 w-9 rounded-full bg-white grid place-items-center"><Users className="h-4 w-4 text-[#5B4DBC]" /></span>
+              <div><p className="text-sm font-medium text-white">Find a mentor</p><p className="text-xs text-white/80">3 suggested for you</p></div>
+              <ArrowRight className="h-4 w-4 ml-auto text-white" />
             </Link>
-            <Link href="/student/ai/career-assistant" className="flex items-center gap-3 rounded-[16px] bg-[#FFD8E4] border border-[var(--md-sys-color-outline-variant)] p-3 hover:bg-[#FFC8D8]">
-              <span className="h-9 w-9 rounded-full bg-[#8B3A5C] grid place-items-center"><MessageCircle className="h-4 w-4 text-white" /></span>
-              <div><p className="text-sm font-medium">Ask AI</p><p className="text-xs text-[var(--md-sys-color-on-surface-variant)]">Career roadmap in 30s</p></div>
-              <ArrowRight className="h-4 w-4 ml-auto text-[var(--md-sys-color-on-surface-variant)]" />
+            <Link href="/student/ai/career-assistant" className="flex items-center gap-3 rounded-[16px] bg-white border-2 border-[#FFD9E3] p-3 hover:bg-[#FFF0F3]">
+              <span className="h-9 w-9 rounded-full bg-[#8B4A61] grid place-items-center"><MessageCircle className="h-4 w-4 text-white" /></span>
+              <div><p className="text-sm font-medium text-[#3A071E]">Ask AI</p><p className="text-xs text-[#8B4A61]">Career roadmap in 30s</p></div>
+              <ArrowRight className="h-4 w-4 ml-auto text-[#8B4A61]" />
             </Link>
-            <Link href="/student/profile" className="flex items-center gap-3 rounded-[16px] bg-[#D0E8FF] border border-[var(--md-sys-color-outline-variant)] p-3 hover:bg-[#B8D8FF]">
-              <span className="h-9 w-9 rounded-full bg-[#2C4A6B] grid place-items-center"><BookOpen className="h-4 w-4 text-white" /></span>
-              <div><p className="text-sm font-medium">Build resume</p><p className="text-xs text-[var(--md-sys-color-on-surface-variant)]">AI review + score</p></div>
-              <ArrowRight className="h-4 w-4 ml-auto text-[var(--md-sys-color-on-surface-variant)]" />
+            <Link href="/student/profile" className="flex items-center gap-3 rounded-[16px] bg-white border-2 border-[#9EF1E6] p-3 hover:bg-[#E6FFF9]">
+              <span className="h-9 w-9 rounded-full bg-[#006A60] grid place-items-center"><BookOpen className="h-4 w-4 text-white" /></span>
+              <div><p className="text-sm font-medium text-[#00201C]">Build resume</p><p className="text-xs text-[#006A60]">AI review + score</p></div>
+              <ArrowRight className="h-4 w-4 ml-auto text-[#006A60]" />
             </Link>
-            <p className="text-xs text-center text-[var(--md-sys-color-on-surface-variant)] pt-1">Pick one to start — we’ll guide you.</p>
+            <p className="text-xs text-center text-[var(--md-sys-color-on-surface-variant)] pt-1">Pick one — we’ll guide you.</p>
           </CardContent>
         </Card>
       </div>
